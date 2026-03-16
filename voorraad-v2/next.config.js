@@ -16,7 +16,23 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "upload.wikimedia.org",
+        hostname: "logospng.org",
+      },
+      {
+        protocol: "https",
+        hostname: "1000logos.net",
+      },
+      {
+        protocol: "https",
+        hostname: "logos-world.net",
+      },
+      {
+        protocol: "https",
+        hostname: "pngset.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.freelogovectors.net",
       },
     ],
   },

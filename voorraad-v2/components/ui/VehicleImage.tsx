@@ -49,16 +49,14 @@ const SAMPLE_IMAGES: Record<string, string> = {
 const BRAND_LOGOS: Record<string, string> = {
   "MAN": "https://www.denengelsen.eu/uploads/MAN/logo-man.svg",
   "VW": "https://www.denengelsen.eu/uploads/Logos-other/VW_Bedrijfswagens_logo-cropped.svg",
-  "Skoda": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Skoda_Auto_Logo.svg",
-  "Mercedes": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
-  "Mercedes-Benz": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
-  "Ford": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Ford_logo_flat.svg",
-  "Renault": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Renault_Logo.svg",
-  "Opel": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Opel_Logo_2020.svg",
-  "Citroen": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Citroen_Logo.svg",
-  "Citroën": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Citroen_Logo.svg",
-  "Peugeot": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Peugeot_Logo.svg",
-  "Toyota": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Toyota_logo.svg",
+  "Renault": "https://logospng.org/download/renault/logo-renault-4096.png",
+  "Citroen": "https://1000logos.net/wp-content/uploads/2019/12/Citroen-Logo-2016.png",
+  "Citroën": "https://1000logos.net/wp-content/uploads/2019/12/Citroen-Logo-2016.png",
+  "Peugeot": "https://cdn.freelogovectors.net/wp-content/uploads/2023/05/peugeot_logo-freelogovectors.net_-640x360.png",
+  "Opel": "https://logos-world.net/wp-content/uploads/2021/05/Opel-Logo.png",
+  "Toyota": "https://pngset.com/images/download-toyota-logo-toyota-logo-symbol-trademark-emblem-badge-transparent-png-2838667.png",
+  "Skoda": "https://1000logos.net/wp-content/uploads/2022/02/Logo-Skoda-1536x864.png",
+  "Škoda": "https://1000logos.net/wp-content/uploads/2022/02/Logo-Skoda-1536x864.png",
 };
 
 function getVehicleImageUrl(name: string, brand: string): string | null {
@@ -119,14 +117,14 @@ function getBrandLogo(brand: string): string | null {
   
   if (upperBrand === "MAN") return BRAND_LOGOS["MAN"];
   if (upperBrand === "VW" || upperBrand === "VOLKSWAGEN") return BRAND_LOGOS["VW"];
-  if (upperBrand === "MERCEDES-BENZ" || upperBrand === "MERCEDES" || upperBrand === "MERC") return BRAND_LOGOS["Mercedes"];
   if (upperBrand === "RENAULT") return BRAND_LOGOS["Renault"];
   if (upperBrand === "PEUGEOT") return BRAND_LOGOS["Peugeot"];
   if (upperBrand === "CITROËN" || upperBrand === "CITROEN") return BRAND_LOGOS["Citroen"];
   if (upperBrand === "TOYOTA") return BRAND_LOGOS["Toyota"];
   if (upperBrand === "OPEL") return BRAND_LOGOS["Opel"];
   if (upperBrand === "ŠKODA" || upperBrand === "SKODA") return BRAND_LOGOS["Skoda"];
-  if (upperBrand === "FORD") return BRAND_LOGOS["Ford"];
+  if (upperBrand === "MERCEDES-BENZ" || upperBrand === "MERCEDES" || upperBrand === "MERC") return null;
+  if (upperBrand === "FORD") return null;
   
   return null;
 }
