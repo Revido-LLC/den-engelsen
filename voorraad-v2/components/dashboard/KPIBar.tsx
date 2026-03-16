@@ -1,18 +1,18 @@
 "use client";
 import { KPISnapshot } from "@/types";
 import { cn } from "@/lib/utils";
-import { useLanguage } from "@/lib/language-context";
+import { useLang } from "@/lib/i18n";
 import { AlertCircle, TrendingDown, Clock, Package, Euro, BarChart3 } from "lucide-react";
 
 interface Props { kpi: KPISnapshot; }
 
 export function KPIBar({ kpi }: Props) {
-  const { t, formatCurrency, formatNumber } = useLanguage();
+  const { t, fmt, fmtDays } = useLang();
 
   const items = [
     {
       icon: <Package className="w-4 h-4" />,
-      label: t('kpi.totalVehicles'),
+      label: t("kpi.totalVehicles"),
       value: String(kpi.total_vehicles),
       color: "text-foreground",
       bg: "bg-secondary/60",
@@ -20,8 +20,8 @@ export function KPIBar({ kpi }: Props) {
     },
     {
       icon: <Euro className="w-4 h-4" />,
-      label: t('kpi.totalInterestCost'),
-      value: formatCurrency(kpi.total_interest_cost),
+      label: t("kpi.totalInterestCost"),
+      value: fmt(kpi.total_interest_cost),
       color: "text-red-600",
       bg: "bg-red-50",
       border: "border-red-100",
@@ -29,7 +29,7 @@ export function KPIBar({ kpi }: Props) {
     },
     {
       icon: <AlertCircle className="w-4 h-4" />,
-      label: t('kpi.actionRequired'),
+      label: t("kpi.actionRequired"),
       value: String(kpi.needs_action),
       color: kpi.needs_action > 0 ? "text-amber-700" : "text-emerald-700",
       bg: kpi.needs_action > 0 ? "bg-amber-50" : "bg-emerald-50",
@@ -37,7 +37,7 @@ export function KPIBar({ kpi }: Props) {
     },
     {
       icon: <TrendingDown className="w-4 h-4" />,
-      label: t('kpi.critical'),
+      label: t("kpi.critical"),
       value: String(kpi.critical),
       color: kpi.critical > 0 ? "text-red-700" : "text-emerald-700",
       bg: kpi.critical > 0 ? "bg-red-50" : "bg-emerald-50",
@@ -45,16 +45,16 @@ export function KPIBar({ kpi }: Props) {
     },
     {
       icon: <Clock className="w-4 h-4" />,
-      label: t('kpi.avgDays'),
-      value: `${formatNumber(kpi.avg_days)} ${t('detail.days')}`,
+      label: t("kpi.avgDays"),
+      value: fmtDays(kpi.avg_days),
       color: "text-foreground",
       bg: "bg-secondary/60",
       border: "border-transparent",
     },
     {
       icon: <BarChart3 className="w-4 h-4" />,
-      label: t('kpi.aboveMarket'),
-      value: `+${formatNumber(kpi.avg_market_delta)}%`,
+      label: t("kpi.aboveMarket"),
+      value: `+${kpi.avg_market_delta}%`,
       color: "text-red-600",
       bg: "bg-red-50",
       border: "border-red-100",

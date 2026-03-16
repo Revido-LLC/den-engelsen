@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { fetchVehicles, computeKPIs, BRANCHES } from "@/lib/data-supabase";
 import { Vehicle, FilterState } from "@/types";
 import { cn } from "@/lib/utils";
-import { useLanguage } from "@/lib/language-context";
+import { useLang } from "@/lib/i18n";
+import { LangToggle } from "@/components/ui/LangToggle";
 import { KPIBar } from "@/components/dashboard/KPIBar";
 import { VehicleCard } from "@/components/dashboard/VehicleCard";
 import { VehicleDetail } from "@/components/dashboard/VehicleDetail";
@@ -28,7 +29,7 @@ const BRAND_OPTIONS = [
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { t, language, setLanguage } = useLanguage();
+  const { t } = useLang();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selectedId, setSelectedId] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -106,12 +107,7 @@ export default function DashboardPage() {
           <button onClick={() => router.push('/settings')} className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">{t('nav.settings')}</button>
         </nav>
         <div className="flex-1" />
-        <button
-          onClick={() => setLanguage(language === 'en' ? 'nl' : 'en')}
-          className="px-2 py-1 text-xs font-semibold bg-secondary rounded hover:bg-secondary/80 border border-border"
-        >
-          {language.toUpperCase()}
-        </button>
+        <LangToggle />
         <div className="flex items-center gap-2">
           <div className="hidden sm:block text-right">
             <div className="text-xs font-medium">{DEMO_USER.name}</div>
@@ -186,7 +182,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="px-3 py-2 flex items-center justify-between flex-shrink-0 border-b border-border/50">
-            <span className="text-[10px] text-muted-foreground">{filtered.length} vehicles</span>
+            <span className="text-[10px] text-muted-foreground">{filtered.length} {t('vehicleList.count')}</span>
             <span className="text-[10px] text-muted-foreground">{t('vehicleList.sortedBy')} ↓</span>
           </div>
 

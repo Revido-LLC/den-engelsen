@@ -1,5 +1,5 @@
 "use client";
-import { LanguageProvider } from "@/lib/language-context";
+import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
