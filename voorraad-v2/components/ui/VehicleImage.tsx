@@ -47,18 +47,18 @@ const SAMPLE_IMAGES: Record<string, string> = {
 };
 
 const BRAND_LOGOS: Record<string, string> = {
-  "MAN": "https://logo.clearbit.com/man.eu",
-  "VW": "https://logo.clearbit.com/volkswagen.com",
-  "Skoda": "https://logo.clearbit.com/skoda-auto.com",
-  "Mercedes": "https://logo.clearbit.com/mercedes-benz.com",
-  "Mercedes-Benz": "https://logo.clearbit.com/mercedes-benz.com",
-  "Ford": "https://logo.clearbit.com/ford.com",
-  "Renault": "https://logo.clearbit.com/renault.com",
-  "Opel": "https://logo.clearbit.com/opel.com",
-  "Citroen": "https://logo.clearbit.com/citroen.com",
-  "Citroën": "https://logo.clearbit.com/citroen.com",
-  "Peugeot": "https://logo.clearbit.com/peugeot.com",
-  "Toyota": "https://logo.clearbit.com/toyota.com",
+  "MAN": "https://www.denengelsen.eu/uploads/MAN/logo-man.svg",
+  "VW": "https://www.denengelsen.eu/uploads/Logos-other/VW_Bedrijfswagens_logo-cropped.svg",
+  "Skoda": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Skoda_Auto_Logo.svg",
+  "Mercedes": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
+  "Mercedes-Benz": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
+  "Ford": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Ford_logo_flat.svg",
+  "Renault": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Renault_Logo.svg",
+  "Opel": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Opel_Logo_2020.svg",
+  "Citroen": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Citroen_Logo.svg",
+  "Citroën": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Citroen_Logo.svg",
+  "Peugeot": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Peugeot_Logo.svg",
+  "Toyota": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Toyota_logo.svg",
 };
 
 function getVehicleImageUrl(name: string, brand: string): string | null {
