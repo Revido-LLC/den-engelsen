@@ -46,7 +46,6 @@ const translations: Record<string, { en: string; nl: string }> = {
   
   // Vehicle list
   "vehicleList.count": { en: "vehicles", nl: "voertuigen" },
-  "vehicleList.sortedBy": { en: "Sorted by urgency", nl: "Gesorteerd op urgentie" },
   "vehicleList.noVehicles": { en: "No vehicles found", nl: "Geen voertuigen gevonden" },
   "vehicleList.selectVehicle": { en: "Select a vehicle", nl: "Selecteer een voertuig" },
   

@@ -24,7 +24,7 @@ export function VehicleImage({ src, alt, brand, type, className, aspectRatio = "
   const showPlaceholder = !src || error;
 
   return (
-    <div className={cn("relative overflow-hidden rounded-lg bg-secondary", aspectRatio === "video" ? "aspect-video" : "aspect-square", className)}>
+    <div className={cn("relative overflow-hidden rounded-lg bg-secondary", className, aspectRatio === "video" ? "aspect-[16/10]" : "aspect-square")}>
       {showPlaceholder ? (
         <div className={cn("absolute inset-0 flex flex-col items-center justify-center", brandBg)}>
           {type === "truck" ? (
