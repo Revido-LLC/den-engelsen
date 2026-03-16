@@ -58,8 +58,8 @@ const BRAND_LOGOS: Record<string, string> = {
   "Skoda": "https://1000logos.net/wp-content/uploads/2022/02/Logo-Skoda-1536x864.png",
   "Škoda": "https://1000logos.net/wp-content/uploads/2022/02/Logo-Skoda-1536x864.png",
   "Ford": "https://www.pngmart.com/files/4/Ford-Logo-PNG-Transparent-Image.png",
-  "Mercedes": "https://www.pngmart.com/files/22/1-Mercedes-Logo-Transparent.png",
-  "Mercedes-Benz": "https://www.pngmart.com/files/22/1-Mercedes-Logo-Transparent.png",
+  "Mercedes": "https://www.philshawvehicles.im/wp-content/uploads/2025/01/mercedes.jpg",
+  "Mercedes-Benz": "https://www.philshawvehicles.im/wp-content/uploads/2025/01/mercedes.jpg",
 };
 
 function getVehicleImageUrl(name: string, brand: string): string | null {
