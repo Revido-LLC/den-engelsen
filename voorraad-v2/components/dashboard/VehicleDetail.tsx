@@ -1,7 +1,7 @@
 "use client";
 import { Vehicle, ActionItem, ActionType } from "@/types";
-import { formatEuro, formatKm, cn } from "@/lib/utils";
-import { ACTION_LABELS, ACTION_DESC } from "@/lib/data";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/language-context";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,21 +15,30 @@ interface Props {
   onToggleAction: (vehicleId: string, actionId: string, completed: boolean) => void;
 }
 
-const STATUS_MAP = {
-  green: { label: "On track",       badge: "green" as const, bar: "bar-green" },
-  amber: { label: "Attention",      badge: "amber" as const, bar: "bar-amber" },
-  red:   { label: "Action required",badge: "red"   as const, bar: "bar-red"   },
-};
-
-const ACTION_ICONS: Record<ActionType, React.ReactNode> = {
-  price_reduction: <TrendingDown className="w-4 h-4" />,
-  photo_update:    <Camera className="w-4 h-4" />,
-  call_prospect:   <Phone className="w-4 h-4" />,
-  export_platform: <Globe className="w-4 h-4" />,
-};
-
 export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
-  const sm = STATUS_MAP[v.status];
+  const { t, formatCurrency, formatKm, language } = useLanguage();
+  
+  const STATUS_MAP = {
+    green: { label: t('status.onTrack'), badge: "green" as const, bar: "bar-green" },
+    amber: { label: t('status.attention'), badge: "amber" as const, bar: "bar-amber" },
+    red:   { label: t('status.actionRequired'), badge: "red" as const, bar: "bar-red" },
+  };
+
+  const ACTION_LABELS: Record<string, string> = {
+    price_reduction: t('action.priceReduction'),
+    photo_update: t('action.photoUpdate'),
+    call_prospect: t('action.callProspect'),
+    export_platform: t('action.exportPlatform'),
+  };
+
+  const ACTION_ICONS: Record<ActionType, React.ReactNode> = {
+    price_reduction: <TrendingDown className="w-4 h-4" />,
+    photo_update:    <Camera className="w-4 h-4" />,
+    call_prospect:   <Phone className="w-4 h-4" />,
+    export_platform: <Globe className="w-4 h-4" />,
+  };
+
+  const sm = STATUS_MAP[v.status as keyof typeof STATUS_MAP] || STATUS_MAP.green;
   const pct = Math.min(100, (v.days_in_stock / 90) * 100);
   const pending  = (v.action_items ?? []).filter(a => !a.completed);
   const completed = (v.action_items ?? []).filter(a => a.completed);
@@ -43,10 +52,23 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
       <div className="bg-white border-b border-border px-5 py-4 flex-shrink-0">
         <div className="flex items-start justify-between gap-4 mb-3">
           <div className="flex items-start gap-3 min-w-0">
-            <div className={cn(
-              "w-11 h-11 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 border",
-              v.brand === "MAN" ? "bg-red-50 text-brand border-red-100" : "bg-blue-50 text-blue-700 border-blue-100"
-            )}>{v.brand}</div>
+            {v.image_url ? (
+              <div className="w-20 h-14 rounded-xl overflow-hidden bg-secondary flex-shrink-0">
+                <img 
+                  src={v.image_url} 
+                  alt={v.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://placehold.co/400x250/f5f5f5/999?text=No+Image';
+                  }}
+                />
+              </div>
+            ) : (
+              <div className={cn(
+                "w-11 h-11 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 border",
+                v.brand === "MAN" ? "bg-red-50 text-brand border-red-100" : "bg-blue-50 text-blue-700 border-blue-100"
+              )}>{v.brand}</div>
+            )}
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-1.5 mb-1">
                 <h2 className="text-sm font-semibold truncate">{v.name}</h2>
@@ -66,10 +88,10 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
           <div className="flex items-start gap-4 flex-shrink-0">
             <div className="text-right">
               <div className="text-[10px] text-muted-foreground">Asking price</div>
-              <div className="text-lg font-semibold mono">{formatEuro(v.price)}</div>
+              <div className="text-lg font-semibold mono">{formatCurrency(v.price)}</div>
               {v.discount_pct > 0 && (
                 <div className="text-[10px] text-brand flex items-center gap-0.5 justify-end">
-                  <ArrowDownRight className="w-3 h-3" />Advised: {formatEuro(v.recommended_price)}
+                  <ArrowDownRight className="w-3 h-3" />Advised: {formatCurrency(v.recommended_price)}
                 </div>
               )}
             </div>
@@ -82,7 +104,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
             <div className="text-right">
               <div className="text-[10px] text-muted-foreground">Interest cost</div>
               <div className="text-lg font-semibold mono text-red-600 flex items-center gap-1">
-                <Flame className="w-3.5 h-3.5" />{formatEuro(v.interest_cost)}
+                <Flame className="w-3.5 h-3.5" />{formatCurrency(v.interest_cost)}
               </div>
               <div className="text-[10px] text-muted-foreground">@ 5.5% p.a.</div>
             </div>
@@ -128,13 +150,13 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
                   <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-amber-700">
                     <span className="font-semibold">Price advice: </span>
-                    Reduce from <strong>{formatEuro(v.price)}</strong> to <strong>{formatEuro(v.recommended_price)}</strong> (-{v.discount_pct}%) based on {v.days_in_stock} days in stock.
+                    Reduce from <strong>{formatCurrency(v.price)}</strong> to <strong>{formatCurrency(v.recommended_price)}</strong> (-{v.discount_pct}%) based on {v.days_in_stock} days in stock.
                   </p>
                 </div>
               )}
 
               <div className="grid grid-cols-3 gap-2">
-                <MetricBox label="Current price" value={formatEuro(v.price)} />
+                <MetricBox label="Current price" value={formatCurrency(v.price)} />
                 <MetricBox
                   label="Market position"
                   value={v.market_delta_pct > 5 ? "Overpriced" : v.market_delta_pct > 0 ? "Market rate" : "Good value"}
@@ -143,7 +165,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
                 />
                 <MetricBox
                   label="Advised price"
-                  value={formatEuro(v.recommended_price)}
+                  value={formatCurrency(v.recommended_price)}
                   valueClass={v.discount_pct > 0 ? "text-brand" : "text-emerald-600"}
                   sub={v.discount_pct > 0 ? `-${v.discount_pct}%` : "No adjustment needed"}
                 />
@@ -152,16 +174,16 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
               <div className="grid grid-cols-2 gap-2">
                 <MetricBox
                   label="Interest cost to date"
-                  value={formatEuro(v.interest_cost)}
+                  value={formatCurrency(v.interest_cost)}
                   valueClass="text-red-600"
                   sub="5.5% p.a. financing"
                   icon={<Flame className="w-3 h-3 text-red-500 mr-0.5" />}
                 />
                 <MetricBox
                   label="Cost per day"
-                  value={formatEuro(Math.round((v.price * 0.055) / 365))}
+                  value={formatCurrency(Math.round((v.price * 0.055) / 365))}
                   valueClass="text-red-500"
-                  sub={`×${v.days_in_stock}d = ${formatEuro(v.interest_cost)}`}
+                  sub={`×${v.days_in_stock}d = ${formatCurrency(v.interest_cost)}`}
                 />
               </div>
 
@@ -185,7 +207,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={cn("font-semibold", active ? "text-brand" : "text-muted-foreground")}>-{r.pct}%</span>
-                          {active && <span className="mono text-[10px] text-muted-foreground">{formatEuro(Math.round(v.price*(1-r.pct/100)))}</span>}
+                          {active && <span className="mono text-[10px] text-muted-foreground">{formatCurrency(Math.round(v.price*(1-r.pct/100)))}</span>}
                         </div>
                       </div>
                     );
@@ -262,17 +284,17 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
           <TabsContent value="market" className="mt-3">
             <div className="space-y-3 overflow-y-auto thin-scroll animate-fade-in pr-1" style={{ maxHeight: "calc(100vh - 350px)" }}>
               <div className="grid grid-cols-3 gap-2">
-                <MetricBox label="Our asking price" value={formatEuro(v.price)} />
+                <MetricBox label="Our asking price" value={formatCurrency(v.price)} />
                 <MetricBox
                   label="Avg. market (3 platforms)"
-                  value={formatEuro(avgMarket)}
+                  value={formatCurrency(avgMarket)}
                   sub="AutoScout24 · Gaspedaal · Marktplaats"
                 />
                 <MetricBox
                   label="Cheapest competitor"
-                  value={formatEuro(cheapest)}
+                  value={formatCurrency(cheapest)}
                   valueClass={cheapest < v.price ? "text-red-600" : "text-emerald-600"}
-                  sub={cheapest < v.price ? `We are ${formatEuro(v.price - cheapest)} more expensive` : "We are cheapest"}
+                  sub={cheapest < v.price ? `We are ${formatCurrency(v.price - cheapest)} more expensive` : "We are cheapest"}
                 />
               </div>
 
@@ -348,7 +370,7 @@ function ActionRow({ action, vehicle, onToggle, isDone }: {
         <p className="text-[11px] text-muted-foreground">{ACTION_DESC[action.action_type as ActionType]}</p>
         {action.action_type === "price_reduction" && !isDone && vehicle.discount_pct > 0 && (
           <div className="mt-1 text-[11px] text-brand font-medium">
-            Advice: {formatEuro(vehicle.price)} → {formatEuro(vehicle.recommended_price)} (-{vehicle.discount_pct}%)
+            Advice: {formatCurrency(vehicle.price)} → {formatCurrency(vehicle.recommended_price)} (-{vehicle.discount_pct}%)
           </div>
         )}
         {action.action_type === "export_platform" && !isDone && (
@@ -383,7 +405,7 @@ function PriceBar({ label, price, maxPrice, isOurs, source }: {
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
         <span className={cn("font-medium", isOurs ? "text-brand" : "text-foreground")}>{label}</span>
-        <span className={cn("mono", isOurs && "font-semibold text-brand")}>{formatEuro(price)}</span>
+        <span className={cn("mono", isOurs && "font-semibold text-brand")}>{formatCurrency(price)}</span>
       </div>
       <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
         <div className={cn("h-full rounded-full", bar)} style={{ width: `${pct}%` }} />
@@ -403,10 +425,10 @@ function ListingRow({ listing, ourPrice }: { listing: any; ourPrice: number }) {
     <div className="p-3 flex items-center gap-3">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-          <span className="text-xs font-semibold mono">{formatEuro(listing.price)}</span>
+          <span className="text-xs font-semibold mono">{formatCurrency(listing.price)}</span>
           <span className={cn("text-[10px] px-1.5 py-0.5 rounded-full border",
             diff > 0 ? "bg-red-50 text-red-600 border-red-100" : "bg-emerald-50 text-emerald-600 border-emerald-100")}>
-            {diff > 0 ? `we are ${formatEuro(diff)} more expensive` : `we are ${formatEuro(Math.abs(diff))} cheaper`}
+            {diff > 0 ? `we are ${formatCurrency(diff)} more expensive` : `we are ${formatCurrency(Math.abs(diff))} cheaper`}
           </span>
         </div>
         <div className="flex gap-3 text-[10px] text-muted-foreground">

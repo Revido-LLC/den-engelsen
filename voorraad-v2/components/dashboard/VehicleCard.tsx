@@ -1,7 +1,8 @@
 "use client";
 import { Vehicle } from "@/types";
-import { formatEuro, formatKm, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/lib/language-context";
 import { MapPin, Flame } from "lucide-react";
 
 interface Props {
@@ -15,6 +16,7 @@ const STATUS_BADGE: Record<string, "green" | "amber" | "red"> = {
 };
 
 export function VehicleCard({ vehicle: v, isSelected, onClick }: Props) {
+  const { formatCurrency, formatKm, t } = useLanguage();
   const pct = Math.min(100, (v.days_in_stock / 90) * 100);
   const barClass = v.status === "green" ? "bar-green" : v.status === "amber" ? "bar-amber" : "bar-red";
   const urgencyColor = v.urgency_score > 15000 ? "text-red-600" : v.urgency_score > 7000 ? "text-amber-600" : "text-muted-foreground";
@@ -38,18 +40,15 @@ export function VehicleCard({ vehicle: v, isSelected, onClick }: Props) {
               alt={v.name}
               className="w-full h-full object-cover"
               onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).src = 'https://placehold.co/400x250/f5f5f5/999?text=No+Image';
               }}
             />
           ) : (
-            <div className={cn(
-              "w-full h-full flex items-center justify-center text-[8px] font-bold",
-              v.brand === "MAN"
-                ? "bg-red-50 text-brand"
-                : "bg-blue-50 text-blue-700"
-            )}>
-              {v.brand === "Mercedes-Benz" ? "Merc" : v.brand === "Citroën" ? "Cit" : v.brand === "Škoda" ? "Skod" : v.brand}
-            </div>
+            <img 
+              src="https://placehold.co/400x250/f5f5f5/999?text=No+Image"
+              alt={v.name}
+              className="w-full h-full object-cover"
+            />
           )}
         </div>
 
@@ -79,12 +78,12 @@ export function VehicleCard({ vehicle: v, isSelected, onClick }: Props) {
 
           {/* Price + interest cost */}
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-foreground mono">{formatEuro(v.price)}</span>
+            <span className="text-[11px] font-semibold text-foreground mono">{formatCurrency(v.price)}</span>
             <div className="flex items-center gap-1.5">
               {v.interest_cost > 0 && (
                 <span className={cn("flex items-center gap-0.5 text-[10px]", urgencyColor)}>
                   <Flame className="w-2.5 h-2.5" />
-                  {formatEuro(v.interest_cost)}
+                  {formatCurrency(v.interest_cost)}
                 </span>
               )}
               {v.pending_actions > 0 && (

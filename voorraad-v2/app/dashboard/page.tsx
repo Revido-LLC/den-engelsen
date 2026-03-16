@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { fetchVehicles, computeKPIs, BRANCHES } from "@/lib/data-supabase";
 import { Vehicle, FilterState } from "@/types";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/language-context";
 import { KPIBar } from "@/components/dashboard/KPIBar";
 import { VehicleCard } from "@/components/dashboard/VehicleCard";
 import { VehicleDetail } from "@/components/dashboard/VehicleDetail";
@@ -11,8 +12,23 @@ import { Search, Filter, X, ChevronDown, Truck, BarChart3 } from "lucide-react";
 
 const DEMO_USER = { name: "Thomas de Vries", role: "Manager", initials: "TD" };
 
+const BRAND_OPTIONS = [
+  ["all", "All brands"],
+  ["MAN", "MAN"],
+  ["VW", "VW"],
+  ["Ford", "Ford"],
+  ["Renault", "Renault"],
+  ["Mercedes-Benz", "Merc."],
+  ["Peugeot", "Peugeot"],
+  ["Citroën", "Citroën"],
+  ["Toyota", "Toyota"],
+  ["Škoda", "Škoda"],
+  ["Opel", "Opel"],
+] as [string, string][];
+
 export default function DashboardPage() {
   const router = useRouter();
+  const { t, language, setLanguage } = useLanguage();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selectedId, setSelectedId] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -85,15 +101,21 @@ export default function DashboardPage() {
         </div>
         <div className="hidden md:block w-px h-5 bg-border mx-1" />
         <nav className="hidden md:flex items-center gap-1">
-          <button onClick={() => router.push('/dashboard')} className="px-3 py-1.5 text-xs font-medium text-brand bg-brand/5 rounded-md">Dashboard</button>
-          <button onClick={() => router.push('/reports')} className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">Reports</button>
-          <button onClick={() => router.push('/settings')} className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">Settings</button>
+          <button onClick={() => router.push('/dashboard')} className="px-3 py-1.5 text-xs font-medium text-brand bg-brand/5 rounded-md">{t('nav.dashboard')}</button>
+          <button onClick={() => router.push('/reports')} className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">{t('nav.reports')}</button>
+          <button onClick={() => router.push('/settings')} className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">{t('nav.settings')}</button>
         </nav>
         <div className="flex-1" />
+        <button
+          onClick={() => setLanguage(language === 'en' ? 'nl' : 'en')}
+          className="px-2 py-1 text-xs font-semibold bg-secondary rounded hover:bg-secondary/80 border border-border"
+        >
+          {language.toUpperCase()}
+        </button>
         <div className="flex items-center gap-2">
           <div className="hidden sm:block text-right">
             <div className="text-xs font-medium">{DEMO_USER.name}</div>
-            <div className="text-[10px] text-muted-foreground">{DEMO_USER.role} · All branches</div>
+            <div className="text-[10px] text-muted-foreground">{t('label.manager')} · {t('label.allBranches')}</div>
           </div>
           <div className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center text-xs font-semibold">
             {DEMO_USER.initials}
@@ -110,7 +132,7 @@ export default function DashboardPage() {
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
               <input
                 type="text"
-                placeholder="Search vehicle or branch..."
+                placeholder={t('filter.search')}
                 value={filters.search}
                 onChange={e => setFilters(f => ({...f, search: e.target.value}))}
                 className="w-full pl-8 pr-8 py-1.5 text-xs bg-secondary rounded-md border-0 outline-none focus:ring-1 focus:ring-brand/30 placeholder:text-muted-foreground"
@@ -127,7 +149,7 @@ export default function DashboardPage() {
                 showFilters || activeFilters > 0 ? "bg-brand/5 text-brand" : "text-muted-foreground hover:bg-secondary")}
             >
               <Filter className="w-3 h-3" />
-              Filters
+              {t('filter.filters')}
               {activeFilters > 0 && <span className="bg-brand text-white rounded-full px-1.5 text-[10px] leading-4">{activeFilters}</span>}
               <ChevronDown className={cn("w-3 h-3 ml-auto transition-transform", showFilters && "rotate-180")} />
             </button>
@@ -135,10 +157,10 @@ export default function DashboardPage() {
             {showFilters && (
               <div className="grid grid-cols-2 gap-x-3 gap-y-2 animate-fade-in">
                 {[
-                  { key:"branch", label:"Branch", opts:[["all","All branches"], ...BRANCHES.map(b=>[b,b])] as [string,string][] },
-                  { key:"type", label:"Type", opts:[["all","All types"],["truck","Truck"],["van","Van"]] as [string,string][] },
-                  { key:"brand", label:"Brand", opts:[["all","All brands"],["MAN","MAN"],["VW","VW"],["Ford","Ford"],["Renault","Renault"],["Mercedes-Benz","Merc."],["Peugeot","Peugeot"],["Citroën","Citroën"],["Toyota","Toyota"],["Škoda","Škoda"],["Opel","Opel"]] as [string,string][] },
-                  { key:"status", label:"Status", opts:[["all","All statuses"],["green","On track (<30d)"],["amber","Attention (30–45d)"],["red","Action required (>45d)"]] as [string,string][] },
+                  { key:"branch", label: t('filter.branch'), opts:[["all", t('filter.allBranches')], ...BRANCHES.map(b=>[b,b])] as [string,string][] },
+                  { key:"type", label: t('filter.type'), opts:[["all", t('filter.allTypes')],["truck", t('filter.truck')],["van", t('filter.van')]] as [string,string][] },
+                  { key:"brand", label: t('filter.brand'), opts: BRAND_OPTIONS as [string,string][] },
+                  { key:"status", label: t('filter.status'), opts:[["all", t('filter.allStatuses')],["green", t('filter.green')],["amber", t('filter.amber')],["red", t('filter.red')]] as [string,string][] },
                 ].map(({key, label, opts}) => (
                   <div key={key}>
                     <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide block mb-0.5">{label}</label>
@@ -156,7 +178,7 @@ export default function DashboardPage() {
                     onClick={() => setFilters({branch:"all",type:"all",brand:"all",status:"all",search:""})}
                     className="col-span-2 text-xs text-brand hover:underline text-left px-1"
                   >
-                    Clear filters
+                    {t('filter.clearFilters')}
                   </button>
                 )}
               </div>
@@ -165,14 +187,14 @@ export default function DashboardPage() {
 
           <div className="px-3 py-2 flex items-center justify-between flex-shrink-0 border-b border-border/50">
             <span className="text-[10px] text-muted-foreground">{filtered.length} vehicles</span>
-            <span className="text-[10px] text-muted-foreground">Sorted by urgency ↓</span>
+            <span className="text-[10px] text-muted-foreground">{t('vehicleList.sortedBy')} ↓</span>
           </div>
 
           <div className="flex-1 overflow-y-auto thin-scroll">
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-40 gap-2 text-muted-foreground">
                 <Truck className="w-8 h-8 opacity-20" />
-                <span className="text-xs">No vehicles found</span>
+                <span className="text-xs">{t('vehicleList.noVehicles')}</span>
               </div>
             ) : (
               <div className="divide-y divide-border">
@@ -196,7 +218,7 @@ export default function DashboardPage() {
             <div className="h-full flex items-center justify-center text-muted-foreground">
               <div className="text-center">
                 <BarChart3 className="w-10 h-10 mx-auto mb-2 opacity-20" />
-                <p className="text-sm">Select a vehicle</p>
+                <p className="text-sm">{t('vehicleList.selectVehicle')}</p>
               </div>
             </div>
           )}
