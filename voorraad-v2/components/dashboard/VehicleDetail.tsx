@@ -6,9 +6,9 @@ import { VehicleImage } from "@/components/ui/VehicleImage";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
-  MapPin, Calendar, Gauge, TrendingDown, CheckCircle2, Circle,
+  MapPin, Calendar, Gauge, TrendingDown, TrendingUp, CheckCircle2, Circle,
   ExternalLink, AlertTriangle, Flame, ArrowDownRight, Camera,
-  Phone, Globe, BarChart2, Clock
+  Phone, Globe, BarChart2, Clock, Sparkles
 } from "lucide-react";
 
 interface Props {
@@ -84,13 +84,28 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
             </div>
 
             <div className="text-right flex-shrink-0">
-              <div className="text-[10px] text-muted-foreground">{t("detail.askingPrice")}</div>
-              <div className="text-lg font-semibold mono">{fmt(v.price)}</div>
-              {v.discount_pct > 0 && (
-                <div className="text-[10px] text-brand flex items-center gap-0.5 justify-end">
-                  <ArrowDownRight className="w-3 h-3" />{t("detail.advised")}: {fmt(v.recommended_price)}
+              <div className="text-[10px] text-muted-foreground mb-1">{t("detail.askingPrice")}</div>
+              <div className="text-xl font-bold text-foreground">{fmt(v.price)}</div>
+              {v.recommended_price && v.recommended_price < v.price ? (
+                <div className="mt-2 bg-gradient-to-r from-brand/10 to-red-50 border border-brand/20 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <TrendingDown className="w-3.5 h-3.5 text-brand" />
+                    <span className="text-[10px] font-semibold text-brand uppercase tracking-wide">{t("detail.advised")}</span>
+                  </div>
+                  <div className="text-lg font-bold text-brand">{fmt(v.recommended_price)}</div>
+                  <div className="text-[10px] text-red-600 mt-0.5">
+                    Save {fmt(v.price - v.recommended_price)} ({(Math.round((v.price - v.recommended_price) / v.price * 100))}%)
+                  </div>
                 </div>
-              )}
+              ) : v.recommended_price ? (
+                <div className="mt-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <TrendingDown className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-[10px] font-semibold text-emerald-700 uppercase tracking-wide">Well Priced</span>
+                  </div>
+                  <div className="text-lg font-bold text-emerald-700">{fmt(v.recommended_price)}</div>
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -116,18 +131,58 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
           <TabsContent value="overview" className="m-0 p-5 space-y-6">
             {/* Price Advice Section */}
             <div>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("overview.priceAdvice")}</h3>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5" />
+                {t("overview.priceAdvice")}
+              </h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white rounded-lg p-3 border border-border">
-                  <div className="text-[10px] text-muted-foreground mb-1">{t("overview.currentPrice")}</div>
-                  <div className="text-lg font-semibold mono">{fmt(v.price)}</div>
-                </div>
-                <div className="bg-white rounded-lg p-3 border border-border">
-                  <div className="text-[10px] text-muted-foreground mb-1">{t("overview.marketPosition")}</div>
-                  <div className={cn("text-lg font-semibold", v.market_delta_pct > 5 ? "text-red-600" : v.market_delta_pct < -5 ? "text-emerald-600" : "text-amber-600")}>
-                    {v.market_delta_pct > 5 ? t("overview.overpriced") : v.market_delta_pct < -5 ? t("overview.goodValue") : t("overview.marketRate")}
+                <div className="bg-white rounded-xl p-4 border-2 border-border shadow-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
+                      <span className="text-xs font-bold text-muted-foreground">€</span>
+                    </div>
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-wide">{t("overview.currentPrice")}</div>
                   </div>
-                  <div className="text-[10px] text-muted-foreground">{t("overview.vsMarket")}: {v.market_delta_pct > 0 ? "+" : ""}{v.market_delta_pct}%</div>
+                  <div className="text-2xl font-bold text-foreground">{fmt(v.price)}</div>
+                </div>
+                <div className={cn(
+                  "rounded-xl p-4 border-2 shadow-sm",
+                  v.recommended_price && v.recommended_price < v.price 
+                    ? "bg-gradient-to-br from-brand/5 to-red-50 border-brand/30" 
+                    : "bg-emerald-50 border-emerald-200"
+                )}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center",
+                      v.recommended_price && v.recommended_price < v.price ? "bg-brand" : "bg-emerald-500"
+                    )}>
+                      {v.recommended_price && v.recommended_price < v.price ? (
+                        <TrendingDown className="w-4 h-4 text-white" />
+                      ) : (
+                        <Sparkles className="w-4 h-4 text-white" />
+                      )}
+                    </div>
+                    <div className={cn(
+                      "text-[10px] uppercase tracking-wide",
+                      v.recommended_price && v.recommended_price < v.price ? "text-brand" : "text-emerald-700"
+                    )}>
+                      {t("overview.marketPosition")}
+                    </div>
+                  </div>
+                  <div className={cn(
+                    "text-2xl font-bold",
+                    v.recommended_price && v.recommended_price < v.price ? "text-brand" : "text-emerald-700"
+                  )}>
+                    {v.recommended_price ? fmt(v.recommended_price) : t("overview.marketRate")}
+                  </div>
+                  {v.recommended_price && (
+                    <div className={cn(
+                      "text-[10px] mt-1",
+                      v.recommended_price < v.price ? "text-red-600" : "text-emerald-600"
+                    )}>
+                      {v.recommended_price < v.price ? "-" : "+"}{Math.abs(v.market_delta_pct)}% {t("overview.vsMarket")}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
