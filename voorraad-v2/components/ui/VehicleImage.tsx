@@ -24,7 +24,6 @@ const SAMPLE_IMAGES: Record<string, string> = {
   "VW Transporter": "https://www.denengelsentopused.eu/transforms/_stockThumb/3204248/50945868_1.webp",
   "VW Caddy": "https://www.denengelsentopused.eu/transforms/_stockThumb/3206931/52087636_1.webp",
   "VW Multivan": "https://www.denengelsentopused.eu/transforms/_stockThumb/3204248/50945868_1.webp",
-  "VW Caddy": "https://www.denengelsentopused.eu/transforms/_stockThumb/3206931/52087636_1.webp",
   "VW": "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp",
 };
 
