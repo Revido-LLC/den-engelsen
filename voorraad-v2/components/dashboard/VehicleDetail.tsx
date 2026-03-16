@@ -166,9 +166,9 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
                   </p>
                   {v.recommended_price && v.recommended_price < v.price && (
                     <div className="mt-3 flex items-center gap-2">
-                      <span className="text-xs text-violet-600">Suggested price:</span>
+                      <span className="text-xs text-violet-600">{lang === "nl" ? "Voorgestelde prijs:" : "Suggested price:"}</span>
                       <span className="text-sm font-bold text-violet-900">{fmt(v.recommended_price)}</span>
-                      <span className="text-xs text-violet-500">({lang === "nl" ? "bespaar" : "save"} {fmt(v.price - v.recommended_price)})</span>
+                      <span className="text-xs text-violet-500">({t("detail.save")} {fmt(v.price - v.recommended_price)})</span>
                     </div>
                   )}
                 </div>
