@@ -118,11 +118,11 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
             <div>
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("overview.priceAdvice")}</h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-secondary/50 rounded-lg p-3">
+                <div className="bg-white rounded-lg p-3 border border-border">
                   <div className="text-[10px] text-muted-foreground mb-1">{t("overview.currentPrice")}</div>
                   <div className="text-lg font-semibold mono">{fmt(v.price)}</div>
                 </div>
-                <div className="bg-secondary/50 rounded-lg p-3">
+                <div className="bg-white rounded-lg p-3 border border-border">
                   <div className="text-[10px] text-muted-foreground mb-1">{t("overview.marketPosition")}</div>
                   <div className={cn("text-lg font-semibold", v.market_delta_pct > 5 ? "text-red-600" : v.market_delta_pct < -5 ? "text-emerald-600" : "text-amber-600")}>
                     {v.market_delta_pct > 5 ? t("overview.overpriced") : v.market_delta_pct < -5 ? t("overview.goodValue") : t("overview.marketRate")}
@@ -158,7 +158,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
                   { days: 45, pct: 4 },
                   { days: 90, pct: 6 },
                 ].map(({ days, pct }) => (
-                  <div key={days} className={cn("flex items-center justify-between px-3 py-2 rounded-lg text-xs", v.days_in_stock >= days ? "bg-brand/10 text-brand" : "bg-secondary/50 text-muted-foreground")}>
+                  <div key={days} className={cn("flex items-center justify-between px-3 py-2 rounded-lg text-xs border", v.days_in_stock >= days ? "bg-brand/5 text-brand border-brand/20" : "bg-white text-muted-foreground border-border")}>
                     <span>{t("overview.after")} {days} {t("overview.days")}</span>
                     <span className="font-semibold">-{pct}% = {fmt(Math.round(v.price * (1 - pct / 100)))}</span>
                   </div>
@@ -169,7 +169,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
             {/* Vehicle Details */}
             <div>
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("overview.vehicleDetails")}</h3>
-              <div className="bg-secondary/50 rounded-lg p-3 space-y-2 text-xs">
+              <div className="bg-white rounded-lg p-3 space-y-2 text-xs border border-border">
                 <div className="flex justify-between"><span className="text-muted-foreground">{t("overview.id")}</span><span className="font-medium mono">{v.id}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">{t("overview.brand")}</span><span className="font-medium">{v.brand}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">{t("overview.type")}</span><span className="font-medium capitalize">{v.type}</span></div>
