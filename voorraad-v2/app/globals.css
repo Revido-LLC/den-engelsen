@@ -40,8 +40,8 @@
 
 /* ─── Custom utilities ─────────────────────────────── */
 @layer components {
-  .brand-gradient { background: linear-gradient(135deg, #C8102E 0%, #8B0B1F 100%); }
-  .brand-gradient-subtle { background: linear-gradient(135deg, rgba(200,16,46,0.06) 0%, rgba(200,16,46,0.02) 100%); }
+  .brand-gradient { background: linear-gradient(135deg, #15264C 0%, #0E1B33 100%); }
+  .brand-gradient-subtle { background: linear-gradient(135deg, rgba(21,38,76,0.06) 0%, rgba(21,38,76,0.02) 100%); }
 
   .glass { @apply bg-white/90 backdrop-blur-md border border-white/60; }
 
