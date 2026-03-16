@@ -49,14 +49,17 @@ const SAMPLE_IMAGES: Record<string, string> = {
 const BRAND_LOGOS: Record<string, string> = {
   "MAN": "https://www.denengelsen.eu/uploads/MAN/logo-man.svg",
   "VW": "https://www.denengelsen.eu/uploads/Logos-other/VW_Bedrijfswagens_logo-cropped.svg",
-  "Mercedes-Benz": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
+  "Mercedes-Benz": "https://www.denengelsen.eu/uploads/Logos-other/Mercedes_Benz_logo.svg",
+  "Mercedes": "https://www.denengelsen.eu/uploads/Logos-other/Mercedes_Benz_logo.svg",
+  "Renault": "https://www.denengelsen.eu/uploads/Logos-other/Renault_Logo.svg",
+  "Citroën": "https://www.denengelsen.eu/uploads/Logos-other/Citroen_Logo.svg",
+  "Citroen": "https://www.denengelsen.eu/uploads/Logos-other/Citroen_Logo.svg",
+  "Peugeot": "https://www.denengelsen.eu/uploads/Logos-other/Peugeot_Logo.svg",
   "Ford": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Ford_logo_flat.svg",
-  "Renault": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Renault_Logo.svg",
-  "Peugeot": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Peugeot_Logo.svg",
-  "Citroën": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Citro%C3%ABn_Logo.svg",
-  "Toyota": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Toyota_logo.svg",
-  "Opel": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Opel_Logo_2020.svg",
-  "Škoda": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Skoda_Auto_Logo.svg",
+  "Toyota": "https://www.denengelsen.eu/uploads/Logos-other/Toyota_Logo.svg",
+  "Opel": "https://www.denengelsen.eu/uploads/Logos-other/Opel_Logo.svg",
+  "Škoda": "https://www.denengelsen.eu/uploads/Logos-other/Skoda_Logo.svg",
+  "Skoda": "https://www.denengelsen.eu/uploads/Logos-other/Skoda_Logo.svg",
 };
 
 function getVehicleImageUrl(name: string, brand: string): string | null {
@@ -115,16 +118,16 @@ function getVehicleImageUrl(name: string, brand: string): string | null {
 function getBrandLogo(brand: string): string | null {
   const upperBrand = brand.toUpperCase();
   
-  if (upperBrand === "MERCEDES-BENZ" || upperBrand === "MERC") return BRAND_LOGOS["Mercedes-Benz"];
+  if (upperBrand === "MERCEDES-BENZ" || upperBrand === "MERC") return BRAND_LOGOS["Mercedes"];
   if (upperBrand === "VW" || upperBrand === "VOLKSWAGEN") return BRAND_LOGOS["VW"];
   if (upperBrand === "MAN") return BRAND_LOGOS["MAN"];
-  if (upperBrand === "FORD") return BRAND_LOGOS["Ford"];
   if (upperBrand === "RENAULT") return BRAND_LOGOS["Renault"];
   if (upperBrand === "PEUGEOT") return BRAND_LOGOS["Peugeot"];
   if (upperBrand === "CITROËN" || upperBrand === "CITROEN") return BRAND_LOGOS["Citroën"];
   if (upperBrand === "TOYOTA") return BRAND_LOGOS["Toyota"];
   if (upperBrand === "OPEL") return BRAND_LOGOS["Opel"];
   if (upperBrand === "ŠKODA" || upperBrand === "SKODA") return BRAND_LOGOS["Škoda"];
+  if (upperBrand === "FORD") return BRAND_LOGOS["Ford"];
   
   return null;
 }
