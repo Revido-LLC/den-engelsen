@@ -17,6 +17,10 @@ const translations: Record<string, { en: string; nl: string }> = {
   "nav.dashboard": { en: "Dashboard", nl: "Dashboard" },
   "nav.reports": { en: "Reports", nl: "Rapporten" },
   "nav.settings": { en: "Settings", nl: "Instellingen" },
+  "nav.back": { en: "Back", nl: "Terug" },
+  
+  // General
+  "general.loading": { en: "Loading vehicles...", nl: "Voertuigen laden..." },
   
   // KPI
   "kpi.totalVehicles": { en: "Total vehicles", nl: "Totaal voertuigen" },
@@ -46,6 +50,7 @@ const translations: Record<string, { en: string; nl: string }> = {
   
   // Vehicle list
   "vehicleList.count": { en: "vehicles", nl: "voertuigen" },
+  "vehicleList.sortedBy": { en: "Sorted by", nl: "Gesorteerd op" },
   "vehicleList.noVehicles": { en: "No vehicles found", nl: "Geen voertuigen gevonden" },
   "vehicleList.selectVehicle": { en: "Select a vehicle", nl: "Selecteer een voertuig" },
   
@@ -125,6 +130,45 @@ const translations: Record<string, { en: string; nl: string }> = {
   // Labels
   "label.manager": { en: "Manager", nl: "Manager" },
   "label.allBranches": { en: "All branches", nl: "Alle vestigingen" },
+  
+  // Navigation
+  "nav.back": { en: "Back", nl: "Terug" },
+  
+  // Settings
+  "settings.profile": { en: "Profile", nl: "Profiel" },
+  "settings.name": { en: "Name", nl: "Naam" },
+  "settings.email": { en: "Email", nl: "E-mail" },
+  "settings.role": { en: "Role", nl: "Rol" },
+  "settings.notifications": { en: "Notifications", nl: "Meldingen" },
+  "settings.criticalAlerts": { en: "Critical vehicle alerts", nl: "Kritieke voertuignalen" },
+  "settings.dailySummary": { en: "Daily interest cost summary", nl: "Dagelijkse rentekosten samenvatting" },
+  "settings.actionReminders": { en: "Action item reminders", nl: "Herinneringen actie-items" },
+  "settings.security": { en: "Security", nl: "Beveiliging" },
+  "settings.changePassword": { en: "Change password", nl: "Wachtwoord wijzigen" },
+  "settings.twoFactor": { en: "Two-factor authentication", nl: "Twee-factor authenticatie" },
+  "settings.notEnabled": { en: "Not enabled", nl: "Niet ingeschakeld" },
+  "settings.data": { en: "Data", nl: "Data" },
+  "settings.dataSource": { en: "Data source", nl: "Databron" },
+  "settings.demoMode": { en: "Demo mode", nl: "Demomodus" },
+  "settings.lastSync": { en: "Last sync", nl: "Laatste synchronisatie" },
+  "settings.connectSupabase": { en: "Connect Supabase", nl: "Verbind Supabase" },
+  
+  // Reports
+  "reports.monthlyStock": { en: "Monthly Stock Report", nl: "Maandelijks voorraadrapport" },
+  "reports.stockOverview": { en: "Overview of inventory performance", nl: "Overzicht van voorraadprestaties" },
+  "reports.march": { en: "March", nl: "Maart" },
+  "reports.february": { en: "February", nl: "Februari" },
+  "reports.january": { en: "January", nl: "Januari" },
+  "reports.interestCost": { en: "Interest Cost Analysis", nl: "Rentekosten analyse" },
+  "reports.financialImpact": { en: "Financial impact of inventory holding", nl: "Financiële impact van voorraadhouden" },
+  "reports.totalInterest": { en: "Total interest cost MTD", nl: "Totale rentekosten mtd" },
+  "reports.branchPerformance": { en: "Branch Performance", nl: "Vestigingsprestaties" },
+  "reports.performanceByLocation": { en: "Performance by location", nl: "Prestaties per locatie" },
+  "reports.viewDetails": { en: "View details", nl: "Bekijk details" },
+  "reports.exportData": { en: "Export Data", nl: "Data exporteren" },
+  "reports.downloadReports": { en: "Download reports as CSV or PDF", nl: "Download rapporten als CSV of PDF" },
+  "reports.exportCSV": { en: "Export CSV", nl: "Exporteer CSV" },
+  "reports.exportPDF": { en: "Export PDF", nl: "Exporteer PDF" },
 };
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);

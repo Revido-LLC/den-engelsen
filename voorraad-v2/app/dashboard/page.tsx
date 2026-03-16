@@ -95,7 +95,7 @@ export default function DashboardPage() {
       <div className="h-screen flex items-center justify-center bg-[#F2F3F5]">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-brand/30 border-t-brand rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">Loading vehicles...</p>
+          <p className="text-sm text-muted-foreground">{t('general.loading')}</p>
         </div>
       </div>
     );
