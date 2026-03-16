@@ -47,19 +47,18 @@ const SAMPLE_IMAGES: Record<string, string> = {
 };
 
 const BRAND_LOGOS: Record<string, string> = {
-  "MAN": "https://www.denengelsen.eu/uploads/MAN/logo-man.svg",
-  "VW": "https://www.denengelsen.eu/uploads/Logos-other/VW_Bedrijfswagens_logo-cropped.svg",
-  "Mercedes-Benz": "https://www.denengelsen.eu/uploads/Logos-other/Mercedes_Benz_logo.svg",
-  "Mercedes": "https://www.denengelsen.eu/uploads/Logos-other/Mercedes_Benz_logo.svg",
-  "Renault": "https://www.denengelsen.eu/uploads/Logos-other/Renault_Logo.svg",
-  "Citroën": "https://www.denengelsen.eu/uploads/Logos-other/Citroen_Logo.svg",
-  "Citroen": "https://www.denengelsen.eu/uploads/Logos-other/Citroen_Logo.svg",
-  "Peugeot": "https://www.denengelsen.eu/uploads/Logos-other/Peugeot_Logo.svg",
-  "Ford": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Ford_logo_flat.svg",
-  "Toyota": "https://www.denengelsen.eu/uploads/Logos-other/Toyota_Logo.svg",
-  "Opel": "https://www.denengelsen.eu/uploads/Logos-other/Opel_Logo.svg",
-  "Škoda": "https://www.denengelsen.eu/uploads/Logos-other/Skoda_Logo.svg",
-  "Skoda": "https://www.denengelsen.eu/uploads/Logos-other/Skoda_Logo.svg",
+  "MAN": "https://logo.clearbit.com/man.eu",
+  "VW": "https://logo.clearbit.com/volkswagen.com",
+  "Skoda": "https://logo.clearbit.com/skoda-auto.com",
+  "Mercedes": "https://logo.clearbit.com/mercedes-benz.com",
+  "Mercedes-Benz": "https://logo.clearbit.com/mercedes-benz.com",
+  "Ford": "https://logo.clearbit.com/ford.com",
+  "Renault": "https://logo.clearbit.com/renault.com",
+  "Opel": "https://logo.clearbit.com/opel.com",
+  "Citroen": "https://logo.clearbit.com/citroen.com",
+  "Citroën": "https://logo.clearbit.com/citroen.com",
+  "Peugeot": "https://logo.clearbit.com/peugeot.com",
+  "Toyota": "https://logo.clearbit.com/toyota.com",
 };
 
 function getVehicleImageUrl(name: string, brand: string): string | null {
@@ -118,15 +117,15 @@ function getVehicleImageUrl(name: string, brand: string): string | null {
 function getBrandLogo(brand: string): string | null {
   const upperBrand = brand.toUpperCase();
   
-  if (upperBrand === "MERCEDES-BENZ" || upperBrand === "MERC") return BRAND_LOGOS["Mercedes"];
-  if (upperBrand === "VW" || upperBrand === "VOLKSWAGEN") return BRAND_LOGOS["VW"];
   if (upperBrand === "MAN") return BRAND_LOGOS["MAN"];
+  if (upperBrand === "VW" || upperBrand === "VOLKSWAGEN") return BRAND_LOGOS["VW"];
+  if (upperBrand === "MERCEDES-BENZ" || upperBrand === "MERCEDES" || upperBrand === "MERC") return BRAND_LOGOS["Mercedes"];
   if (upperBrand === "RENAULT") return BRAND_LOGOS["Renault"];
   if (upperBrand === "PEUGEOT") return BRAND_LOGOS["Peugeot"];
-  if (upperBrand === "CITROËN" || upperBrand === "CITROEN") return BRAND_LOGOS["Citroën"];
+  if (upperBrand === "CITROËN" || upperBrand === "CITROEN") return BRAND_LOGOS["Citroen"];
   if (upperBrand === "TOYOTA") return BRAND_LOGOS["Toyota"];
   if (upperBrand === "OPEL") return BRAND_LOGOS["Opel"];
-  if (upperBrand === "ŠKODA" || upperBrand === "SKODA") return BRAND_LOGOS["Škoda"];
+  if (upperBrand === "ŠKODA" || upperBrand === "SKODA") return BRAND_LOGOS["Skoda"];
   if (upperBrand === "FORD") return BRAND_LOGOS["Ford"];
   
   return null;
@@ -137,6 +136,7 @@ export function VehicleImage({ src, alt, brand, type, className, aspectRatio = "
   const [error, setError] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(src || null);
   const [showLightbox, setShowLightbox] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     if (!src) {
@@ -156,6 +156,14 @@ export function VehicleImage({ src, alt, brand, type, className, aspectRatio = "
   const brandBorder = isMan ? "border-red-100" : "border-blue-100";
 
   const showPlaceholder = !imageUrl || error;
+
+  const getBrandDisplayName = (b: string): string => {
+    if (b === "Mercedes-Benz") return "Merc";
+    if (b === "Citroën") return "Cit";
+    if (b === "Škoda") return "Skod";
+    if (b.length > 4) return b.substring(0, 4);
+    return b;
+  };
 
   return (
     <>
@@ -200,8 +208,20 @@ export function VehicleImage({ src, alt, brand, type, className, aspectRatio = "
           </>
         )}
         {brandLogo && !showPlaceholder && (
-          <div className="absolute top-1.5 left-1.5 w-8 h-8 bg-white rounded-md shadow-sm flex items-center justify-center p-1">
-            <img src={brandLogo} alt={brand} className="w-full h-full object-contain" />
+          <div className={cn(
+            "absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold border flex items-center gap-1",
+            brandBg, brandBorder
+          )}>
+            {logoError ? (
+              <span className={brandColor}>{getBrandDisplayName(brand)}</span>
+            ) : (
+              <img 
+                src={brandLogo} 
+                alt={brand} 
+                className="w-6 h-6 object-contain"
+                onError={() => setLogoError(true)}
+              />
+            )}
           </div>
         )}
       </div>
