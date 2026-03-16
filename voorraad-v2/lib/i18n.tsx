@@ -77,6 +77,7 @@ const translations: Record<string, { en: string; nl: string }> = {
   
   // Detail - Overview tab
   "overview.priceAdvice": { en: "Price advice", nl: "Prijsadvies" },
+  "overview.aiRecommendation": { en: "AI Recommendation", nl: "AI Aanbeveling" },
   "overview.currentPrice": { en: "Current price", nl: "Huidige prijs" },
   "overview.marketPosition": { en: "Market position", nl: "Marktpositie" },
   "overview.overpriced": { en: "Overpriced", nl: "Te duur" },

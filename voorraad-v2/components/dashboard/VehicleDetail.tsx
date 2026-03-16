@@ -139,6 +139,42 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
 
         <div className="flex-1 overflow-y-auto thin-scroll">
           <TabsContent value="overview" className="m-0 p-5 space-y-6">
+            {/* AI Recommendation */}
+            <div className="bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-200 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-violet-500 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-sm font-semibold text-violet-900">{t("overview.aiRecommendation")}</h3>
+                    <span className="text-[10px] bg-violet-200 text-violet-700 px-1.5 py-0.5 rounded-full">Powered by Market Data</span>
+                  </div>
+                  <p className="text-xs text-violet-700 leading-relaxed">
+                    {v.days_in_stock > 60 
+                      ? lang === "nl" 
+                        ? "Dit voertuig staat al lang in voorraad. Verlaging met 8-10% wordt aanbevolen om sneller te verkopen en rentekosten te verlagen."
+                        : "This vehicle has been in stock for a while. An 8-10% price reduction is recommended to sell faster and reduce interest costs."
+                      : v.days_in_stock > 30
+                      ? lang === "nl"
+                        ? "Dit voertuig nadert de 45 dagen grens. Overweeg een kleine prijsverlaging om de circulatiesnelheid te verbeteren."
+                        : "This vehicle is approaching the 45-day threshold. Consider a small price reduction to improve turnover velocity."
+                      : lang === "nl"
+                      ? "Dit voertuig is recent toegevoegd. Huidige prijs is competitief voor de markt."
+                      : "This vehicle was recently added. Current pricing is competitive with market rates."
+                    }
+                  </p>
+                  {v.recommended_price && v.recommended_price < v.price && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className="text-xs text-violet-600">Suggested price:</span>
+                      <span className="text-sm font-bold text-violet-900">{fmt(v.recommended_price)}</span>
+                      <span className="text-xs text-violet-500">({lang === "nl" ? "bespaar" : "save"} {fmt(v.price - v.recommended_price)})</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Price Advice Section */}
             <div>
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-2">
