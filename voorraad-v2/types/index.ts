@@ -17,6 +17,7 @@ export interface Vehicle {
   category: VehicleCategory;
   price: number;
   date_added: string;
+  image_url?: string;
   // computed
   days_in_stock: number;
   status: StockStatus;

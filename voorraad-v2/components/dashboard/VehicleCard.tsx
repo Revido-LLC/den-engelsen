@@ -30,14 +30,27 @@ export function VehicleCard({ vehicle: v, isSelected, onClick }: Props) {
       )}
     >
       <div className="flex items-start gap-2.5">
-        {/* Brand badge */}
-        <div className={cn(
-          "flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-[9px] font-bold mt-0.5 border truncate px-1",
-          v.brand === "MAN"
-            ? "bg-red-50 text-brand border-red-100"
-            : "bg-blue-50 text-blue-700 border-blue-100"
-        )}>
-          {v.brand === "Mercedes-Benz" ? "Merc" : v.brand === "Citroën" ? "Cit" : v.brand === "Škoda" ? "Skod" : v.brand}
+        {/* Vehicle image */}
+        <div className="flex-shrink-0 w-14 h-10 rounded-lg overflow-hidden bg-secondary mt-0.5">
+          {v.image_url ? (
+            <img 
+              src={v.image_url} 
+              alt={v.name}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+          ) : (
+            <div className={cn(
+              "w-full h-full flex items-center justify-center text-[8px] font-bold",
+              v.brand === "MAN"
+                ? "bg-red-50 text-brand"
+                : "bg-blue-50 text-blue-700"
+            )}>
+              {v.brand === "Mercedes-Benz" ? "Merc" : v.brand === "Citroën" ? "Cit" : v.brand === "Škoda" ? "Skod" : v.brand}
+            </div>
+          )}
         </div>
 
         <div className="flex-1 min-w-0">
