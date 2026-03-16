@@ -34,6 +34,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "cdn.freelogovectors.net",
       },
+      {
+        protocol: "https",
+        hostname: "www.pngmart.com",
+      },
     ],
   },
 };
