@@ -1,0 +1,6 @@
+[build]
+  install_command = "cd voorraad-v2 && npm install"
+  build_command = "cd voorraad-v2 && npm run build"
+
+[start]
+  run_command = "cd voorraad-v2 && npm run start"
