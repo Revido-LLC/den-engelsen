@@ -67,6 +67,8 @@ const translations: Record<string, { en: string; nl: string }> = {
   "detail.inStock": { en: "In stock", nl: "In voorraad" },
   "detail.days": { en: "days", nl: "dagen" },
   "detail.d": { en: "d", nl: "d" },
+  "detail.save": { en: "Save", nl: "Bespaar" },
+  "detail.wellPriced": { en: "Well Priced", nl: "Goed Geprijsd" },
   
   // Detail - Overview tab
   "overview.priceAdvice": { en: "Price advice", nl: "Prijsadvies" },

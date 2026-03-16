@@ -84,28 +84,32 @@ export function VehicleDetail({ vehicle: v, onToggleAction }: Props) {
             </div>
 
             <div className="text-right flex-shrink-0">
-              <div className="text-[10px] text-muted-foreground mb-1">{t("detail.askingPrice")}</div>
-              <div className="text-xl font-bold text-foreground">{fmt(v.price)}</div>
-              {v.recommended_price && v.recommended_price < v.price ? (
-                <div className="mt-2 bg-gradient-to-r from-brand/10 to-red-50 border border-brand/20 rounded-lg px-3 py-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <TrendingDown className="w-3.5 h-3.5 text-brand" />
-                    <span className="text-[10px] font-semibold text-brand uppercase tracking-wide">{t("detail.advised")}</span>
-                  </div>
-                  <div className="text-lg font-bold text-brand">{fmt(v.recommended_price)}</div>
-                  <div className="text-[10px] text-red-600 mt-0.5">
-                    Save {fmt(v.price - v.recommended_price)} ({(Math.round((v.price - v.recommended_price) / v.price * 100))}%)
-                  </div>
+              <div className="flex items-end gap-4">
+                <div>
+                  <div className="text-[10px] text-muted-foreground mb-1">{t("detail.askingPrice")}</div>
+                  <div className="text-xl font-bold text-foreground">{fmt(v.price)}</div>
                 </div>
-              ) : v.recommended_price ? (
-                <div className="mt-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <TrendingDown className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-[10px] font-semibold text-emerald-700 uppercase tracking-wide">Well Priced</span>
+                {v.recommended_price && v.recommended_price < v.price ? (
+                  <div className="bg-gradient-to-r from-brand to-red-500 rounded-xl px-4 py-2 text-white">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <TrendingDown className="w-3.5 h-3.5" />
+                      <span className="text-[10px] font-semibold uppercase tracking-wide">{t("detail.advised")}</span>
+                    </div>
+                    <div className="text-xl font-bold">{fmt(v.recommended_price)}</div>
+                    <div className="text-[10px] opacity-90 mt-0.5">
+                      {t("detail.save")} {fmt(v.price - v.recommended_price)} ({Math.round((v.price - v.recommended_price) / v.price * 100)}%)
+                    </div>
                   </div>
-                  <div className="text-lg font-bold text-emerald-700">{fmt(v.recommended_price)}</div>
-                </div>
-              ) : null}
+                ) : v.recommended_price ? (
+                  <div className="bg-emerald-500 rounded-xl px-4 py-2 text-white">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span className="text-[10px] font-semibold uppercase tracking-wide">{t("detail.wellPriced")}</span>
+                    </div>
+                    <div className="text-xl font-bold">{fmt(v.recommended_price)}</div>
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
 
