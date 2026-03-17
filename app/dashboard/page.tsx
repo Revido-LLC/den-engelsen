@@ -8,7 +8,7 @@ import { useLang } from "@/lib/i18n";
 import { LangToggle } from "@/components/ui/LangToggle";
 import { KPIBar } from "@/components/dashboard/KPIBar";
 import { VehicleDetail } from "@/components/dashboard/VehicleDetail";
-import { Search, Filter, X, ChevronDown, ChevronRight, Truck, BarChart3, Menu, ArrowLeft, LayoutGrid, List, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { Search, Filter, X, ChevronDown, ChevronRight, ChevronUp, Truck, BarChart3, Menu, ArrowLeft, LayoutGrid, List, AlertTriangle, CheckCircle, Clock, ArrowUpDown, Bell, Sparkles, TrendingDown, BarChart, Zap } from "lucide-react";
 import { VehicleImage } from "@/components/ui/VehicleImage";
 
 const DEMO_USER = { name: "Thomas de Vries", role: "Manager", initials: "TD" };
@@ -19,7 +19,7 @@ type SortBy = "days" | "price" | "mileage" | "name";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { t, fmt, fmtKm } = useLang();
+  const { t, fmt, fmtKm, lang } = useLang();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selectedId, setSelectedId] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,9 @@ export default function DashboardPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [groupBy, setGroupBy] = useState<GroupBy>("none");
   const [sortBy, setSortBy] = useState<SortBy>("days");
+  const [sortDesc, setSortDesc] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [mobileView, setMobileView] = useState<"overview" | "detail">("overview");
 
   const BRAND_OPTIONS = [
@@ -72,15 +74,17 @@ export default function DashboardPage() {
   const sortedVehicles = useMemo(() => {
     const filtered = getFilteredVehicles();
     return [...filtered].sort((a, b) => {
+      let val = 0;
       switch (sortBy) {
-        case "days": return b.days_in_stock - a.days_in_stock;
-        case "price": return a.price - b.price;
-        case "mileage": return a.mileage - b.mileage;
-        case "name": return a.name.localeCompare(b.name);
-        default: return 0;
+        case "days": val = b.days_in_stock - a.days_in_stock; break;
+        case "price": val = a.price - b.price; break;
+        case "mileage": val = a.mileage - b.mileage; break;
+        case "name": val = a.name.localeCompare(b.name); break;
+        default: val = 0;
       }
+      return sortDesc ? -val : val;
     });
-  }, [vehicles, filters, sortBy]);
+  }, [vehicles, filters, sortBy, sortDesc]);
 
   const groupedVehicles = useMemo(() => {
     if (groupBy === "none") return { "All Vehicles": sortedVehicles };
@@ -105,6 +109,67 @@ export default function DashboardPage() {
   const kpi = computeKPIs(filtered);
   const selected = vehicles.find(v => v.id === selectedId) ?? null;
   const activeFilters = [filters.branch, filters.type, filters.brand, filters.status].filter(f => f !== "all").length;
+  
+  const notifications = useMemo(() => {
+    return vehicles.filter(v => v.recommended_price && v.recommended_price < v.price).map(v => ({
+      id: v.id,
+      name: v.name,
+      currentPrice: v.price,
+      recommendedPrice: v.recommended_price!,
+      savings: v.price - v.recommended_price!,
+      days: v.days_in_stock,
+    }));
+  }, [vehicles]);
+
+  const aiInsights = useMemo(() => {
+    const insights: { type: string; title: string; description: string; count: number; icon: string }[] = [];
+    
+    const priceReductionCount = vehicles.filter(v => v.recommended_price && v.recommended_price < v.price).length;
+    if (priceReductionCount > 0) {
+      insights.push({
+        type: 'price',
+        title: lang === 'nl' ? 'Prijsverlaging nodig' : 'Price Reduction Needed',
+        description: lang === 'nl' ? `${priceReductionCount} voertuigen kunnen geprijsd worden naar marktadvies` : `${priceReductionCount} vehicles can be priced according to market advice`,
+        count: priceReductionCount,
+        icon: 'TrendingDown',
+      });
+    }
+    
+    const criticalCount = vehicles.filter(v => v.days_in_stock > 90).length;
+    if (criticalCount > 0) {
+      insights.push({
+        type: 'critical',
+        title: lang === 'nl' ? 'Urgent in voorraad' : 'Critical in Stock',
+        description: lang === 'nl' ? `${criticalCount} voertuigen staan meer dan 90 dagen in voorraad` : `${criticalCount} vehicles have been in stock over 90 days`,
+        count: criticalCount,
+        icon: 'AlertTriangle',
+      });
+    }
+    
+    const actionCount = vehicles.reduce((sum, v) => sum + (v.pending_actions || 0), 0);
+    if (actionCount > 0) {
+      insights.push({
+        type: 'action',
+        title: lang === 'nl' ? 'Openstaande acties' : 'Pending Actions',
+        description: lang === 'nl' ? `${actionCount} acties wachten op actie` : `${actionCount} actions waiting for attention`,
+        count: actionCount,
+        icon: 'Clock',
+      });
+    }
+    
+    const aboveMarketCount = vehicles.filter(v => v.market_delta_pct && v.market_delta_pct > 0).length;
+    if (aboveMarketCount > 0) {
+      insights.push({
+        type: 'market',
+        title: lang === 'nl' ? 'Boven marktprijs' : 'Above Market Price',
+        description: lang === 'nl' ? `${aboveMarketCount} voertuigen zijn duurder dan de markt` : `${aboveMarketCount} vehicles are priced above market`,
+        count: aboveMarketCount,
+        icon: 'BarChart3',
+      });
+    }
+    
+    return insights;
+  }, [vehicles, lang]);
 
   const toggleAction = (vehicleId: string, actionId: string, completed: boolean) => {
     setVehicles(prev => prev.map(v => {
@@ -137,6 +202,7 @@ export default function DashboardPage() {
 
   const handleBackToOverview = () => {
     setMobileView("overview");
+    setSelectedId("");
   };
 
   const FilterButton = ({ value, current, onClick, label }: { value: string; current: string; onClick: () => void; label: string }) => (
@@ -187,6 +253,50 @@ export default function DashboardPage() {
           <button onClick={() => router.push('/settings')} className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">{t('nav.settings')}</button>
         </nav>
         <div className="flex-1" />
+        <div className="relative">
+          <button 
+            onClick={() => setNotificationsOpen(!notificationsOpen)}
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors relative"
+          >
+            <Bell className="w-5 h-5" />
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                {notifications.length}
+              </span>
+            )}
+          </button>
+          {notificationsOpen && (
+            <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl border border-border shadow-xl z-50 max-h-96 overflow-y-auto">
+              <div className="p-3 border-b border-border">
+                <h3 className="font-semibold text-sm">Price Recommendations</h3>
+                <p className="text-xs text-muted-foreground">{notifications.length} vehicles can be price reduced</p>
+              </div>
+              <div className="divide-y divide-border">
+                {notifications.map(n => (
+                  <button
+                    key={n.id}
+                    onClick={() => {
+                      handleVehicleSelect(n.id);
+                      setNotificationsOpen(false);
+                    }}
+                    className="w-full p-3 text-left hover:bg-secondary/50 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="text-sm font-medium truncate">{n.name}</div>
+                        <div className="text-xs text-muted-foreground">{n.days} days in stock</div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <div className="text-sm font-bold text-red-600">-{fmt(n.savings)}</div>
+                        <div className="text-xs text-muted-foreground">to {fmt(n.recommendedPrice)}</div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
         <LangToggle />
         <div className="hidden sm:flex items-center gap-2">
           <div className="text-right">
@@ -249,37 +359,37 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-wrap">
                   <span className="text-sm font-medium text-muted-foreground">{t('filter.filterBy')}</span>
-                  <button
-                    onClick={() => setFilters(f => ({...f, branch: f.branch === "all" ? BRANCHES[0] : f.branch === BRANCHES[0] ? "all" : "all"}))}
-                    className={cn(
-                      "px-4 py-2 rounded-full text-sm font-medium transition-all",
-                      filters.branch !== "all" ? "bg-brand text-white shadow-md" : "bg-white border border-border text-muted-foreground hover:bg-secondary"
-                    )}
+                  <select
+                    value={filters.branch}
+                    onChange={e => setFilters(f => ({...f, branch: e.target.value}))}
+                    className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
                   >
-                    {filters.branch === "all" ? t('filter.allBranches') : filters.branch}
-                  </button>
-                  <button
-                    onClick={() => setFilters(f => ({...f, type: f.type === "all" ? "truck" : f.type === "truck" ? "van" : f.type === "van" ? "all" : "all"}))}
-                    className={cn(
-                      "px-4 py-2 rounded-full text-sm font-medium transition-all",
-                      filters.type !== "all" ? "bg-brand text-white shadow-md" : "bg-white border border-border text-muted-foreground hover:bg-secondary"
-                    )}
+                    <option value="all">{t('filter.allBranches')}</option>
+                    {BRANCHES.map(branch => (
+                      <option key={branch} value={branch}>{branch}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={filters.type}
+                    onChange={e => setFilters(f => ({...f, type: e.target.value}))}
+                    className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
                   >
-                    {filters.type === "all" ? t('filter.allTypes') : filters.type === "truck" ? t('filter.truck') : t('filter.van')}
-                  </button>
-                  <button
-                    onClick={() => setFilters(f => ({...f, status: f.status === "all" ? "green" : f.status === "green" ? "amber" : f.status === "amber" ? "red" : "all"}))}
-                    className={cn(
-                      "px-4 py-2 rounded-full text-sm font-medium transition-all",
-                      filters.status !== "all" ? "bg-brand text-white shadow-md" : "bg-white border border-border text-muted-foreground hover:bg-secondary"
-                    )}
+                    <option value="all">{t('filter.allTypes')}</option>
+                    <option value="truck">{t('filter.truck')}</option>
+                    <option value="van">{t('filter.van')}</option>
+                  </select>
+                  <select
+                    value={filters.status}
+                    onChange={e => setFilters(f => ({...f, status: e.target.value}))}
+                    className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
                   >
-                    {filters.status === "all" ? t('filter.allStatuses') : 
-                     filters.status === "green" ? t('filter.ready') : 
-                     filters.status === "amber" ? t('filter.attention') : t('filter.urgent')}
-                  </button>
+                    <option value="all">{t('filter.allStatuses')}</option>
+                    <option value="green">{t('filter.ready')}</option>
+                    <option value="amber">{t('filter.attention')}</option>
+                    <option value="red">{t('filter.urgent')}</option>
+                  </select>
                   
                   {activeFilters > 0 && (
                     <button
@@ -289,10 +399,8 @@ export default function DashboardPage() {
                       {t('filter.clearAll')}
                     </button>
                   )}
-                </div>
 
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-sm font-medium text-muted-foreground">{t('filter.groupBy')}</span>
+                  <span className="text-sm font-medium text-muted-foreground sm:ml-2">{t('filter.groupBy')}</span>
                   <select
                     value={groupBy}
                     onChange={e => setGroupBy(e.target.value as GroupBy)}
@@ -304,17 +412,27 @@ export default function DashboardPage() {
                     <option value="status">{t('filter.byStatus')}</option>
                   </select>
 
-                  <span className="text-sm font-medium text-muted-foreground ml-4">{t('filter.sortBy')}</span>
+                  <span className="text-sm font-medium text-muted-foreground sm:ml-2">{t('filter.sortBy')}</span>
                   <select
                     value={sortBy}
                     onChange={e => setSortBy(e.target.value as SortBy)}
                     className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
                   >
-                    <option value="days">{t('filter.daysNewest')}</option>
-                    <option value="price">{t('filter.priceLowHigh')}</option>
-                    <option value="mileage">{t('filter.mileageLowHigh')}</option>
-                    <option value="name">{t('filter.nameAZ')}</option>
+                    <option value="days">{sortDesc ? t('filter.daysOldest') : t('filter.daysNewest')}</option>
+                    <option value="price">{sortDesc ? t('filter.priceHighLow') : t('filter.priceLowHigh')}</option>
+                    <option value="mileage">{sortDesc ? t('filter.mileageHighLow') : t('filter.mileageLowHigh')}</option>
+                    <option value="name">{sortDesc ? t('filter.nameZA') : t('filter.nameAZ')}</option>
                   </select>
+                  <button
+                    onClick={() => setSortDesc(d => !d)}
+                    className={cn(
+                      "p-2 rounded-lg border border-border hover:bg-secondary transition-colors",
+                      sortDesc && "bg-brand text-white border-brand hover:bg-brand/90"
+                    )}
+                    title={sortDesc ? "Ascending" : "Descending"}
+                  >
+                    <ArrowUpDown className="w-4 h-4" />
+                  </button>
                 </div>
 
                 <div className="text-sm text-muted-foreground">
@@ -450,21 +568,87 @@ export default function DashboardPage() {
         )}>
           {selected ? (
             <div className="h-full flex flex-col">
-              <div className="lg:hidden flex items-center gap-2 px-3 py-2 bg-white border-b border-border flex-shrink-0">
-                <button onClick={handleBackToOverview} className="p-1 hover:bg-secondary rounded-md">
-                  <ArrowLeft className="w-5 h-5" />
+              <div className="flex items-center gap-2 px-3 py-2 bg-white border-b border-border flex-shrink-0">
+                <button onClick={handleBackToOverview} className="p-1.5 hover:bg-secondary rounded-md">
+                  <X className="w-5 h-5" />
                 </button>
-                <span className="text-sm font-medium truncate">{selected.name}</span>
+                <span className="text-sm font-medium truncate flex-1">{selected.name}</span>
               </div>
               <div className="flex-1 overflow-hidden">
                 <VehicleDetail vehicle={selected} onToggleAction={toggleAction} onUpdatePrice={handleUpdatePrice} />
               </div>
             </div>
           ) : (
-            <div className="h-full flex items-center justify-center text-muted-foreground">
-              <div className="text-center">
-                <BarChart3 className="w-10 h-10 mx-auto mb-2 opacity-20" />
-                <p className="text-sm">{t('vehicleList.selectVehicle')}</p>
+            <div className="h-full overflow-y-auto p-5">
+              <div className="bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-200 rounded-xl p-5 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-violet-500 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold text-violet-900 mb-1">
+                      {lang === 'nl' ? 'AI Insights' : 'AI Insights'}
+                    </h2>
+                    <p className="text-sm text-violet-700">
+                      {lang === 'nl' 
+                        ? `Analyse van ${vehicles.length} voertuigen in uw voorraad`
+                        : `Analysis of ${vehicles.length} vehicles in your inventory`
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                {aiInsights.map((insight, idx) => (
+                  <div 
+                    key={idx}
+                    className="bg-white rounded-xl border border-border p-4 hover:border-brand/30 transition-colors cursor-pointer"
+                    onClick={() => {
+                      if (insight.type === 'price') {
+                        setFilters(f => ({...f, status: 'red'}));
+                      } else if (insight.type === 'critical') {
+                        setFilters(f => ({...f, status: 'red'}));
+                      }
+                    }}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={cn(
+                        "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
+                        insight.type === 'price' && "bg-red-100",
+                        insight.type === 'critical' && "bg-red-100",
+                        insight.type === 'action' && "bg-amber-100",
+                        insight.type === 'market' && "bg-blue-100"
+                      )}>
+                        {insight.type === 'price' && <TrendingDown className="w-5 h-5 text-red-600" />}
+                        {insight.type === 'critical' && <AlertTriangle className="w-5 h-5 text-red-600" />}
+                        {insight.type === 'action' && <Clock className="w-5 h-5 text-amber-600" />}
+                        {insight.type === 'market' && <BarChart3 className="w-5 h-5 text-blue-600" />}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-sm">{insight.title}</h3>
+                          <span className={cn(
+                            "text-lg font-bold",
+                            insight.type === 'price' && "text-red-600",
+                            insight.type === 'critical' && "text-red-600",
+                            insight.type === 'action' && "text-amber-600",
+                            insight.type === 'market' && "text-blue-600"
+                          )}>{insight.count}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{insight.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {aiInsights.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <CheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-500" />
+                    <p className="font-medium">Alles ziet er goed uit!</p>
+                    <p className="text-sm">Geen acties nodig momenteel.</p>
+                  </div>
+                )}
               </div>
             </div>
           )}
