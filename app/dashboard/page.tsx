@@ -505,11 +505,11 @@ export default function DashboardPage() {
                               key={v.id}
                               onClick={() => handleVehicleSelect(v.id)}
                               className={cn(
-                                "w-full bg-white rounded-lg border border-border p-3 text-left hover:shadow-md transition-all flex items-center gap-4",
+                                "w-full bg-white rounded-lg border border-border p-3 text-left hover:shadow-md transition-all flex items-center gap-3",
                                 selectedId === v.id && "ring-2 ring-brand border-brand"
                               )}
                             >
-                              <div className="w-20 h-14 bg-secondary rounded-lg overflow-hidden flex-shrink-0">
+                              <div className="w-16 h-12 bg-secondary rounded-lg overflow-hidden flex-shrink-0">
                                 <VehicleImage
                                   src={v.image_url}
                                   alt={v.name}
@@ -518,6 +518,33 @@ export default function DashboardPage() {
                                   className="w-full h-full object-cover"
                                 />
                               </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <h3 className="font-semibold text-sm truncate pr-2">{v.name}</h3>
+                                  <span className={cn(
+                                    "px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0",
+                                    v.status === "green" && "bg-green-100 text-green-700",
+                                    v.status === "amber" && "bg-amber-100 text-amber-700",
+                                    v.status === "red" && "bg-red-100 text-red-700"
+                                  )}>
+                                    {v.days_in_stock}d
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1 flex-wrap">
+                                  <span>{v.branch}</span>
+                                  <span>·</span>
+                                  <span>{v.year}</span>
+                                  <span className="hidden sm:inline">·</span>
+                                  <span className="whitespace-nowrap">{fmtKm(v.mileage)}</span>
+                                </div>
+                              </div>
+                              <div className="text-right flex-shrink-0 flex flex-col items-end">
+                                <div className="font-bold text-sm">{fmt(v.price)}</div>
+                              </div>
+                              <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                            </button>
+                          ))}
+                        </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
                                   <h3 className="font-semibold text-sm truncate">{v.name}</h3>
@@ -530,16 +557,17 @@ export default function DashboardPage() {
                                     {v.days_in_stock}d
                                   </span>
                                 </div>
-                                <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                                   <span>{v.branch}</span>
                                   <span>·</span>
                                   <span>{v.year}</span>
                                   <span>·</span>
-                                  <span>{fmtKm(v.mileage)}</span>
+                                  <span className="whitespace-nowrap">{fmtKm(v.mileage)}</span>
                                 </div>
                               </div>
-                              <div className="text-right flex-shrink-0">
-                                <div className="font-bold">{fmt(v.price)}</div>
+                              <div className="text-right flex-shrink-0 flex flex-col items-end">
+                                <div className="font-bold text-sm">{fmt(v.price)}</div>
+                                <span className="text-xs text-muted-foreground lg:hidden">{fmtKm(v.mileage)}</span>
                               </div>
                               <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                             </button>
