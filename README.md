@@ -36,19 +36,27 @@ Open http://localhost:3000 — redirects straight to dashboard with mock data.
 ## Supabase setup (production)
 
 1. Create project at app.supabase.com
-2. Run `supabase/schema.sql` in SQL Editor
-3. Fill in `.env.local` with your keys
-4. `npm run dev`
+2. Run `supabase/schema.sql` in SQL Editor, or hit `GET /api/setup` to create tables and seed data
+3. Fill in `.env.local` with your Supabase keys
+4. Remove `NEXT_PUBLIC_MODE=demo` from `.env.local` (or set it to any other value)
+5. `npm run dev`
+
+## Deployment
+
+Hosted on **Railway** (Nixpacks builder). Pushes to `main` trigger automatic deploys. Config in `railway.json`.
 
 ## Project structure
 
 ```
 app/dashboard/page.tsx      — Main split-panel dashboard
 app/login/page.tsx          — Login page
+app/api/setup/route.ts      — DB init + seed endpoint
 components/dashboard/       — KPIBar, VehicleCard, VehicleDetail
 components/ui/              — shadcn/ui components
 lib/data.ts                 — Mock vehicles + market listings
-lib/utils.ts                — Interest calc, formatters
+lib/data-supabase.ts        — Supabase queries with demo fallback
+lib/i18n.tsx                — EN/NL translations + useLang() hook
+lib/utils.ts                — Interest calc, urgency score, formatters
 types/index.ts              — TypeScript interfaces
 supabase/schema.sql         — DB schema + RLS policies
 PROMPT.md                   — Full project specification
