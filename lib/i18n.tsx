@@ -202,6 +202,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("si-lang");
     if (saved === "en" || saved === "nl") {
       setLangState(saved);
+    } else {
+      localStorage.setItem("si-lang", "nl");
     }
   }, []);
 
