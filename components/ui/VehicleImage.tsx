@@ -13,6 +13,7 @@ interface VehicleImageProps {
   aspectRatio?: "video" | "square";
 }
 
+// Images from denengelsen.eu (works) — denengelsentopused.eu blocks hotlinking
 const SAMPLE_IMAGES: Record<string, string> = {
   "MAN TGX": "https://www.denengelsen.eu/transforms/_stockThumb/3195323/50389020_1.webp",
   "MAN TGE": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
@@ -21,29 +22,29 @@ const SAMPLE_IMAGES: Record<string, string> = {
   "MAN TGS": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
   "MAN TG": "https://www.denengelsen.eu/transforms/_stockThumb/3195323/50389020_1.webp",
   "MAN": "https://www.denengelsen.eu/transforms/_stockThumb/3195323/50389020_1.webp",
-  "VW Crafter": "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp",
-  "VW Transporter": "https://www.denengelsentopused.eu/transforms/_stockThumb/3204248/50945868_1.webp",
-  "VW Caddy": "https://www.denengelsentopused.eu/transforms/_stockThumb/3206931/52087636_1.webp",
-  "VW Multivan": "https://www.denengelsentopused.eu/transforms/_stockThumb/3204248/50945868_1.webp",
-  "VW": "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp",
-  "Mercedes": "https://www.denengelsentopused.eu/transforms/_stockThumb/3189191/50515646_1.webp",
-  "Mercedes-Benz": "https://www.denengelsentopused.eu/transforms/_stockThumb/3189191/50515646_1.webp",
-  "Renault Master": "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp",
-  "Renault Trafic": "https://www.denengelsentopused.eu/transforms/_stockThumb/3193622/49792977_1.webp",
-  "Renault": "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp",
-  "Citroën Berlingo": "https://www.denengelsentopused.eu/transforms/_stockThumb/3178947/50260781_1.webp",
-  "Citroën": "https://www.denengelsentopused.eu/transforms/_stockThumb/3178947/50260781_1.webp",
-  "Citroen": "https://www.denengelsentopused.eu/transforms/_stockThumb/3178947/50260781_1.webp",
-  "Peugeot Boxer": "https://www.denengelsentopused.eu/transforms/_stockThumb/3201341/51749966_1.webp",
-  "Peugeot": "https://www.denengelsentopused.eu/transforms/_stockThumb/3201341/51749966_1.webp",
-  "Ford Transit": "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp",
-  "Ford": "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp",
-  "Toyota Proace": "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp",
-  "Toyota": "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp",
-  "Opel Movano": "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp",
-  "Opel": "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp",
-  "Škoda": "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp",
-  "Skoda": "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp",
+  "VW Crafter": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "VW Transporter": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "VW Caddy": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "VW Multivan": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "VW": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "Mercedes": "https://www.denengelsen.eu/transforms/_stockThumb/3195323/50389020_1.webp",
+  "Mercedes-Benz": "https://www.denengelsen.eu/transforms/_stockThumb/3195323/50389020_1.webp",
+  "Renault Master": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "Renault Trafic": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "Renault": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "Citroën Berlingo": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "Citroën": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "Citroen": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "Peugeot Boxer": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "Peugeot": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "Ford Transit": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "Ford": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "Toyota Proace": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "Toyota": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "Opel Movano": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "Opel": "https://www.denengelsen.eu/transforms/_stockThumb/3199178/46825346_1.webp",
+  "Škoda": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
+  "Skoda": "https://www.denengelsen.eu/transforms/_stockThumb/3199280/46824866_1.webp",
 };
 
 const BRAND_LOGOS: Record<string, string> = {
@@ -85,31 +86,31 @@ function getVehicleImageUrl(name: string, brand: string): string | null {
     return "https://www.denengelsen.eu/transforms/_stockThumb/3195323/50389020_1.webp";
   }
   if (upperBrand === "VW" || upperBrand === "VOLKSWAGEN") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3205709/52013469_1.webp";
   }
   if (upperBrand === "MERCEDES-BENZ" || upperBrand === "MERCEDES") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3189191/50515646_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3189191/50515646_1.webp";
   }
   if (upperBrand === "RENAULT") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3194213/51971422_1.webp";
   }
   if (upperBrand === "CITROËN" || upperBrand === "CITROEN") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3178947/50260781_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3178947/50260781_1.webp";
   }
   if (upperBrand === "PEUGEOT") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3201341/51749966_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3201341/51749966_1.webp";
   }
   if (upperBrand === "FORD") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3194213/51971422_1.webp";
   }
   if (upperBrand === "TOYOTA") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3205709/52013469_1.webp";
   }
   if (upperBrand === "OPEL") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3194213/51971422_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3194213/51971422_1.webp";
   }
   if (upperBrand === "ŠKODA" || upperBrand === "SKODA") {
-    return "https://www.denengelsentopused.eu/transforms/_stockThumb/3205709/52013469_1.webp";
+    return "https://www.denengelsen.eu/transforms/_stockThumb/3205709/52013469_1.webp";
   }
   
   return null;

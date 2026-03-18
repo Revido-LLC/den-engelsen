@@ -126,7 +126,7 @@ const translations: Record<string, { en: string; nl: string }> = {
   
   // Detail - Market tab
   "market.ourPrice": { en: "Our asking price", nl: "Onze vraagprijs" },
-  "market.avgMarket": { en: "Avg. market (3 platforms)", nl: "Gem. markt (3 platforms)" },
+  "market.avgMarket": { en: "Avg. market (4 platforms)", nl: "Gem. markt (4 platforms)" },
   "market.cheapestCompetitor": { en: "Cheapest competitor", nl: "Goedkoopste concurrent" },
   "market.weAre": { en: "We are", nl: "Wij zijn" },
   "market.moreExpensive": { en: "more expensive", nl: "duurder" },
@@ -196,7 +196,7 @@ const translations: Record<string, { en: string; nl: string }> = {
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Language>("en");
+  const [lang, setLangState] = useState<Language>("nl");
 
   useEffect(() => {
     const saved = localStorage.getItem("si-lang");

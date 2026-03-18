@@ -4,7 +4,7 @@ export type VehicleBrand = "MAN" | "VW" | "Ford" | "Renault" | "Mercedes-Benz" |
 export type VehicleCategory = "new" | "used";
 export type Branch = "Duiven" | "Eindhoven" | "Nijmegen" | "Venlo" | "Stein" | "Tiel";
 export type ActionType = "price_reduction" | "photo_update" | "call_prospect" | "export_platform";
-export type MarketSource = "AutoScout24" | "Gaspedaal" | "Marktplaats";
+export type MarketSource = "AutoScout24" | "Gaspedaal" | "Marktplaats" | "TheParking";
 
 export interface Vehicle {
   id: string;

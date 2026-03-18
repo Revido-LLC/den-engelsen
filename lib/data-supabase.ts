@@ -48,6 +48,7 @@ function buildMarketListings(v: typeof MOCK_VEHICLES[number]) {
     { source: "AutoScout24" as const, url: "https://www.autoscout24.nl", title: v.name, price: Math.round(base * (0.90 + marketDelta)), year: v.year, mileage: v.mileage + 15000, location: NL_LOCATIONS[1], days_online: 23, dealer: DEALERS[0] },
     { source: "Gaspedaal" as const, url: "https://www.gaspedaal.nl", title: v.name, price: Math.round(base * (0.91 + marketDelta * 0.8)), year: v.year - 1, mileage: v.mileage + 28000, location: NL_LOCATIONS[3], days_online: 41, dealer: DEALERS[2] },
     { source: "Marktplaats" as const, url: "https://www.marktplaats.nl", title: v.name, price: Math.round(base * (0.89 + marketDelta * 0.9)), year: v.year, mileage: v.mileage + 8000, location: NL_LOCATIONS[5], days_online: 18, dealer: DEALERS[4] },
+    { source: "TheParking" as const, url: "https://www.theparking.eu", title: v.name, price: Math.round(base * (0.88 + marketDelta * 1.1)), year: v.year, mileage: v.mileage + 19000, location: NL_LOCATIONS[6], days_online: 31, dealer: DEALERS[3] },
   ];
 }
 
@@ -175,4 +176,5 @@ export const SOURCE_COLORS: Record<string, string> = {
   AutoScout24: "market-source-autoscout",
   Gaspedaal: "market-source-gaspedaal",
   Marktplaats: "market-source-marktplaats",
+  TheParking: "market-source-theparking",
 };

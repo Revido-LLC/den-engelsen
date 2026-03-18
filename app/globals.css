@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,25 +6,25 @@
 
 @layer base {
   :root {
-    --background: 215 30% 96%;
-    --foreground: 222 25% 10%;
+    --background: 72 11% 96%;
+    --foreground: 0 0% 5%;
     --card: 0 0% 100%;
-    --card-foreground: 222 25% 10%;
+    --card-foreground: 0 0% 5%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 25% 10%;
-    --primary: 215 55% 22%;
+    --popover-foreground: 0 0% 5%;
+    --primary: 200 48% 20%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 28% 90%;
-    --secondary-foreground: 222 15% 30%;
-    --muted: 215 25% 88%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 215 25% 88%;
-    --accent-foreground: 222 25% 10%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 214 15% 82%;
-    --input: 214 15% 82%;
-    --ring: 215 55% 22%;
+    --secondary: 200 14% 90%;
+    --secondary-foreground: 220 15% 30%;
+    --muted: 200 10% 88%;
+    --muted-foreground: 210 8% 45%;
+    --accent: 200 10% 88%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 354 100% 57%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 10% 84%;
+    --input: 210 10% 84%;
+    --ring: 200 48% 20%;
     --radius: 0.5rem;
   }
 }
@@ -33,15 +33,18 @@
   * { @apply border-border; }
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Open Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', system-ui, sans-serif;
   }
 }
 
 /* ─── Custom utilities ─────────────────────────────── */
 @layer components {
-  .brand-gradient { background: linear-gradient(135deg, #15264C 0%, #0E1B33 100%); }
-  .brand-gradient-subtle { background: linear-gradient(135deg, rgba(21,38,76,0.06) 0%, rgba(21,38,76,0.02) 100%); }
+  .brand-gradient { background: linear-gradient(135deg, #143954 0%, #1D2241 100%); }
+  .brand-gradient-subtle { background: linear-gradient(135deg, rgba(20,57,84,0.06) 0%, rgba(20,57,84,0.02) 100%); }
 
   .glass { @apply bg-white/90 backdrop-blur-md border border-white/60; }
 
@@ -60,6 +63,7 @@
   .market-source-autoscout  { @apply bg-[#003087]/10 text-[#003087] border border-[#003087]/20; }
   .market-source-gaspedaal  { @apply bg-[#E95B1A]/10 text-[#E95B1A] border border-[#E95B1A]/20; }
   .market-source-marktplaats { @apply bg-[#F58220]/10 text-[#D4700E] border border-[#F58220]/20; }
+  .market-source-theparking { @apply bg-[#00A859]/10 text-[#00A859] border border-[#00A859]/20; }
 
   .urgency-critical { @apply bg-red-50 border-l-4 border-l-red-500; }
   .urgency-high     { @apply bg-amber-50 border-l-4 border-l-amber-500; }
@@ -76,6 +80,16 @@
 .bar-green  { background: linear-gradient(90deg, #10b981, #34d399); }
 .bar-amber  { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
 .bar-red    { background: linear-gradient(90deg, #C8102E, #ef4444); }
+
+/* ─── Premium select styling ─────────────────────────── */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.35rem center;
+  background-repeat: no-repeat;
+  background-size: 1.25em 1.25em;
+  padding-right: 1.75rem;
+}
 
 /* ─── Ticker animation ───────────────────────────────── */
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }

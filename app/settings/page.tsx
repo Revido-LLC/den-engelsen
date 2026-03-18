@@ -11,26 +11,34 @@ export default function SettingsPage() {
   const { t } = useLang();
 
   return (
-    <div className="min-h-screen bg-[#E2E8F0]">
-      <header className="bg-white border-b border-border flex items-center px-4 py-2.5 gap-3">
-        <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground">
-          <ChevronLeft className="w-4 h-4" /> {t('nav.back')}
-        </button>
-        <div className="flex items-center gap-2.5">
-          <img src="/logo.png" alt="Den Engelsen" className="h-8 w-auto" />
-          <div>
-            <div className="text-sm font-semibold leading-tight">StockInsight</div>
-            <div className="text-[10px] text-muted-foreground leading-tight">Den Engelsen Commercial Vehicles</div>
+    <div className="min-h-screen bg-background">
+      <header className="bg-white border-b border-border/60 flex items-center px-4 lg:px-6 py-3 gap-3">
+        <div className="flex items-center gap-3">
+          <img src="/logo-shield.svg" alt="Den Engelsen" className="h-9 w-9" />
+          <div className="hidden sm:block">
+            <div className="text-sm font-bold tracking-tight leading-tight">VoorraadInzicht</div>
+            <div className="text-[10px] text-muted-foreground leading-tight tracking-wide uppercase">Den Engelsen Bedrijfswagens</div>
           </div>
+        </div>
+        <div className="hidden lg:block w-px h-6 bg-border/60 mx-2" />
+        <nav className="hidden lg:flex items-center gap-0.5">
+          <button onClick={() => router.push('/dashboard')} className="px-3.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary/80 transition-colors">{t('nav.dashboard')}</button>
+          <button onClick={() => router.push('/reports')} className="px-3.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary/80 transition-colors">{t('nav.reports')}</button>
+          <button onClick={() => router.push('/settings')} className="px-3.5 py-1.5 text-xs font-semibold text-brand bg-brand/8 rounded-md border border-brand/15">{t('nav.settings')}</button>
+        </nav>
+        <div className="lg:hidden">
+          <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <ChevronLeft className="w-4 h-4" /> {t('nav.back')}
+          </button>
         </div>
         <div className="flex-1" />
         <LangToggle />
-        <div className="flex items-center gap-2">
-          <div className="hidden sm:block text-right">
-            <div className="text-xs font-medium">{DEMO_USER.name}</div>
+        <div className="hidden sm:flex items-center gap-2.5">
+          <div className="text-right">
+            <div className="text-xs font-semibold">{DEMO_USER.name}</div>
             <div className="text-[10px] text-muted-foreground">{DEMO_USER.role} · {t('label.allBranches')}</div>
           </div>
-          <div className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center text-xs font-semibold">
+          <div className="w-9 h-9 rounded-full brand-gradient text-white flex items-center justify-center text-xs font-semibold shadow-sm">
             {DEMO_USER.initials}
           </div>
         </div>

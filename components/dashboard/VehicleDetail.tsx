@@ -6,15 +6,17 @@ import { VehicleImage } from "@/components/ui/VehicleImage";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
-  MapPin, Calendar, Gauge, TrendingDown, TrendingUp, CheckCircle2, Circle,
-  ExternalLink, AlertTriangle, Flame, ArrowDownRight, Camera,
-  Phone, Globe, BarChart2, Clock, Sparkles, Check
+  MapPin, Calendar, Gauge, TrendingDown, CheckCircle2, Circle,
+  ExternalLink, AlertTriangle, Flame, Camera,
+  Phone, Globe, BarChart2, Clock, Sparkles, Check, X
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   vehicle: Vehicle;
   onToggleAction: (vehicleId: string, actionId: string, completed: boolean) => void;
   onUpdatePrice?: (vehicleId: string, newPrice: number) => void;
+  onClose?: () => void;
 }
 
 const ACTION_ICONS: Record<ActionType, React.ReactNode> = {
@@ -24,7 +26,7 @@ const ACTION_ICONS: Record<ActionType, React.ReactNode> = {
   export_platform: <Globe className="w-4 h-4" />,
 };
 
-export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Props) {
+export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice, onClose }: Props) {
   const { t, fmt, fmtKm, lang } = useLang();
   
   const STATUS_MAP = {
@@ -56,10 +58,20 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
   const maxPrice  = Math.max(v.price, ...v.market_listings.map(l => l.price));
 
   return (
-    <div className="h-full flex flex-col overflow-hidden animate-slide-in-right">
+    <div className="h-full flex flex-col overflow-hidden animate-slide-in-right p-3 md:p-4">
+      <div className="bg-white rounded-2xl border border-border/50 shadow-sm flex flex-col h-full overflow-hidden">
+        {/* Close + Title */}
+        {onClose && (
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border/30 flex-shrink-0">
+            <button onClick={onClose} className="p-1.5 hover:bg-secondary rounded-lg transition-colors">
+              <X className="w-4 h-4 text-muted-foreground" />
+            </button>
+            <span className="text-sm font-semibold truncate">{v.name}</span>
+          </div>
+        )}
       <Tabs defaultValue="overview" className="flex flex-col h-full">
         {/* Header */}
-        <div className="bg-white border-b border-border px-3 md:px-5 py-3 md:py-4 flex-shrink-0">
+        <div className="border-b border-border/40 px-3 md:px-5 py-3 md:py-4 flex-shrink-0">
           <div className="flex items-start justify-between gap-2 md:gap-4 mb-2 md:mb-3">
             <div className="flex items-start gap-2 md:gap-3 min-w-0">
               <VehicleImage
@@ -132,7 +144,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
           </div>
         </div>
 
-        <TabsList className="px-5 border-b border-border bg-white flex-shrink-0 justify-start gap-1 h-auto py-2">
+        <TabsList className="px-5 border-b border-border/40 bg-transparent flex-shrink-0 justify-start gap-1 h-auto py-2">
           <TabsTrigger value="overview" className="text-xs px-3">{t("tab.overview")}</TabsTrigger>
           <TabsTrigger value="actions" className="text-xs px-3">{t("tab.actions")}</TabsTrigger>
           <TabsTrigger value="market" className="text-xs px-3">{t("tab.market")}</TabsTrigger>
@@ -172,7 +184,12 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
                       <span className="text-xs text-violet-500">({t("detail.save")} {fmt(v.price - v.recommended_price)})</span>
                       {onUpdatePrice && (
                         <button
-                          onClick={() => onUpdatePrice(v.id, v.recommended_price!)}
+                          onClick={() => {
+                            onUpdatePrice(v.id, v.recommended_price!);
+                            toast.success(lang === 'nl' ? 'Prijs aangepast' : 'Price updated', {
+                              description: `${v.name} → ${fmt(v.recommended_price!)}`,
+                            });
+                          }}
                           className="ml-auto flex items-center gap-1 px-3 py-1.5 bg-brand text-white text-xs font-medium rounded-lg hover:opacity-90 transition-opacity"
                         >
                           <Check className="w-3.5 h-3.5" />
@@ -256,7 +273,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
                   <span className="text-lg font-semibold text-red-700 mono">{fmt(v.interest_cost)}</span>
                 </div>
                 <div className="text-[10px] text-red-600/70">
-                  {t("overview.costPerDay")}: {fmt(Math.round(v.interest_cost / v.days_in_stock))}/day
+                  {t("overview.costPerDay")}: {fmt(Math.round(v.interest_cost / Math.max(v.days_in_stock, 1)))}/{lang === "nl" ? "dag" : "day"}
                 </div>
               </div>
             </div>
@@ -271,7 +288,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
                   { days: 90, pct: 6 },
                 ].map(({ days, pct }) => (
                   <div key={days} className={cn("flex items-center justify-between px-3 py-2 rounded-lg text-xs border", v.days_in_stock >= days ? "bg-brand/5 text-brand border-brand/20" : "bg-white text-muted-foreground border-border")}>
-                    <span>{t("overview.after")} {days} {t("overview.days")}</span>
+                    <span>{t("overview.after")} {days} {t("detail.days")}</span>
                     <span className="font-semibold">-{pct}% = {fmt(Math.round(v.price * (1 - pct / 100)))}</span>
                   </div>
                 ))}
@@ -309,6 +326,9 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
                           if (action.action_type === 'price_reduction' && v.recommended_price && onUpdatePrice) {
                             onUpdatePrice(v.id, v.recommended_price);
                           }
+                          toast.success(lang === 'nl' ? `${ACTION_LABELS[action.action_type]} afgerond` : `${ACTION_LABELS[action.action_type]} completed`, {
+                            description: v.name,
+                          });
                         }}
                         className="w-full flex items-start gap-3 p-3 bg-white border border-border rounded-lg hover:border-brand/30 hover:bg-brand/5 transition-colors text-left"
                       >
@@ -387,7 +407,7 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
                   </div>
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-2">
-                  {t("market.weAre")} {v.price > avgMarket ? `${v.price - avgMarket} (${t("market.moreExpensive")})` : `${avgMarket - v.price} (${t("market.cheaper")})`}
+                  {t("market.weAre")} {v.price > avgMarket ? `${fmt(v.price - avgMarket)} (${t("market.moreExpensive")})` : `${fmt(avgMarket - v.price)} (${t("market.cheaper")})`}
                 </p>
               </div>
 
@@ -396,18 +416,33 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t("market.liveListings")}</h3>
                 <p className="text-[10px] text-muted-foreground mb-2">{t("market.simulated")}</p>
                 <div className="space-y-2">
-                  {v.market_listings.map((listing, i) => (
+                  {v.market_listings.map((listing, i) => {
+                    const logoMap: Record<string, string> = {
+                      "AutoScout24": "https://www.autoscout24.nl/favicon.ico",
+                      "Gaspedaal": "https://www.gaspedaal.nl/favicon.ico",
+                      "Marktplaats": "https://www.marktplaats.nl/favicon.ico",
+                      "TheParking": "https://www.theparking.eu/favicon.ico",
+                    };
+                    const colorMap: Record<string, string> = {
+                      "AutoScout24": "bg-[#003087]/10 border-[#003087]/20",
+                      "Gaspedaal": "bg-[#E95B1A]/10 border-[#E95B1A]/20",
+                      "Marktplaats": "bg-[#F58220]/10 border-[#F58220]/20",
+                      "TheParking": "bg-[#00A859]/10 border-[#00A859]/20",
+                    };
+                    return (
                     <a
                       key={i}
                       href={listing.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 bg-white border border-border rounded-lg hover:border-brand/30 transition-colors"
+                      className="flex items-center justify-between p-3 bg-white border border-border rounded-lg hover:border-brand/30 hover:shadow-sm transition-all"
                     >
-                      <div className="flex items-center gap-2">
-                        <BarChart2 className="w-4 h-4 text-muted-foreground" />
+                      <div className="flex items-center gap-2.5">
+                        <div className={`w-8 h-8 rounded-lg border flex items-center justify-center flex-shrink-0 ${colorMap[listing.source] || "bg-secondary border-border"}`}>
+                          <img src={logoMap[listing.source] || ""} alt={listing.source} className="w-4 h-4 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                        </div>
                         <div>
-                          <div className="text-xs font-medium">{listing.source}</div>
+                          <div className="text-xs font-semibold">{listing.source}</div>
                           <div className="text-[10px] text-muted-foreground">{listing.location} • {listing.days_online}d online</div>
                         </div>
                       </div>
@@ -417,13 +452,15 @@ export function VehicleDetail({ vehicle: v, onToggleAction, onUpdatePrice }: Pro
                       </div>
                       <ExternalLink className="w-3 h-3 text-muted-foreground ml-2" />
                     </a>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </TabsContent>
         </div>
       </Tabs>
+      </div>
     </div>
   );
 }

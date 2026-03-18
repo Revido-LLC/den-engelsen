@@ -10,6 +10,7 @@ import { KPIBar } from "@/components/dashboard/KPIBar";
 import { VehicleDetail } from "@/components/dashboard/VehicleDetail";
 import { Search, Filter, X, ChevronDown, ChevronRight, ChevronUp, Truck, BarChart3, Menu, ArrowLeft, LayoutGrid, List, AlertTriangle, CheckCircle, Clock, ArrowUpDown, Bell, Sparkles, TrendingDown, BarChart, Zap } from "lucide-react";
 import { VehicleImage } from "@/components/ui/VehicleImage";
+import { AIChat } from "@/components/dashboard/AIChat";
 
 const DEMO_USER = { name: "Thomas de Vries", role: "Manager", initials: "TD" };
 
@@ -49,6 +50,9 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchVehicles().then(data => {
       setVehicles(data);
+      setLoading(false);
+    }).catch(err => {
+      console.error("Failed to fetch vehicles:", err);
       setLoading(false);
     });
   }, []);
@@ -221,7 +225,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#E2E8F0]">
+      <div className="h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-brand/30 border-t-brand rounded-full animate-spin mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">{t('general.loading')}</p>
@@ -231,45 +235,45 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-[#E2E8F0]">
-      <header className="bg-white border-b border-border flex items-center px-3 py-2 gap-2 flex-shrink-0 z-20">
-        <button 
+    <div className="h-screen flex flex-col overflow-hidden bg-background">
+      <header className="bg-white border-b border-border/60 flex items-center px-4 lg:px-6 py-3 gap-3 flex-shrink-0 z-20">
+        <button
           onClick={() => setMobileMenuOpen(true)}
           className="lg:hidden p-1.5 -ml-1 hover:bg-secondary rounded-md"
         >
           <Menu className="w-5 h-5" />
         </button>
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="Den Engelsen" className="h-8 w-auto" />
+        <div className="flex items-center gap-3">
+          <img src="/logo-shield.svg" alt="Den Engelsen" className="h-9 w-9" />
           <div className="hidden sm:block">
-            <div className="text-sm font-semibold leading-tight">StockInsight</div>
-            <div className="text-[10px] text-muted-foreground leading-tight">Den Engelsen Commercial Vehicles</div>
+            <div className="text-sm font-bold tracking-tight leading-tight">VoorraadInzicht</div>
+            <div className="text-[10px] text-muted-foreground leading-tight tracking-wide uppercase">Den Engelsen Bedrijfswagens</div>
           </div>
         </div>
-        <div className="hidden lg:block w-px h-5 bg-border mx-1" />
-        <nav className="hidden lg:flex items-center gap-1">
-          <button onClick={() => router.push('/dashboard')} className="px-3 py-1.5 text-xs font-medium text-brand bg-brand/5 rounded-md">{t('nav.dashboard')}</button>
-          <button onClick={() => router.push('/reports')} className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">{t('nav.reports')}</button>
-          <button onClick={() => router.push('/settings')} className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors">{t('nav.settings')}</button>
+        <div className="hidden lg:block w-px h-6 bg-border/60 mx-2" />
+        <nav className="hidden lg:flex items-center gap-0.5">
+          <button onClick={() => router.push('/dashboard')} className="px-3.5 py-1.5 text-xs font-semibold text-brand bg-brand/8 rounded-md border border-brand/15">{t('nav.dashboard')}</button>
+          <button onClick={() => router.push('/reports')} className="px-3.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary/80 transition-colors">{t('nav.reports')}</button>
+          <button onClick={() => router.push('/settings')} className="px-3.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary/80 transition-colors">{t('nav.settings')}</button>
         </nav>
         <div className="flex-1" />
         <div className="relative">
-          <button 
+          <button
             onClick={() => setNotificationsOpen(!notificationsOpen)}
             className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors relative"
           >
             <Bell className="w-5 h-5" />
             {notifications.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-brand-red text-white text-[10px] rounded-full flex items-center justify-center font-semibold">
                 {notifications.length}
               </span>
             )}
           </button>
           {notificationsOpen && (
-            <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl border border-border shadow-xl z-50 max-h-96 overflow-y-auto">
+            <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl border border-border shadow-2xl z-50 max-h-96 overflow-y-auto">
               <div className="p-3 border-b border-border">
-                <h3 className="font-semibold text-sm">Price Recommendations</h3>
-                <p className="text-xs text-muted-foreground">{notifications.length} vehicles can be price reduced</p>
+                <h3 className="font-semibold text-sm">{lang === 'nl' ? 'Prijsaanbevelingen' : 'Price Recommendations'}</h3>
+                <p className="text-xs text-muted-foreground">{notifications.length} {lang === 'nl' ? 'voertuigen kunnen in prijs verlaagd' : 'vehicles can be price reduced'}</p>
               </div>
               <div className="divide-y divide-border">
                 {notifications.map(n => (
@@ -284,11 +288,11 @@ export default function DashboardPage() {
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <div className="text-sm font-medium truncate">{n.name}</div>
-                        <div className="text-xs text-muted-foreground">{n.days} days in stock</div>
+                        <div className="text-xs text-muted-foreground">{n.days} {t('detail.days')}</div>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <div className="text-sm font-bold text-red-600">-{fmt(n.savings)}</div>
-                        <div className="text-xs text-muted-foreground">to {fmt(n.recommendedPrice)}</div>
+                        <div className="text-sm font-bold text-brand-red">-{fmt(n.savings)}</div>
+                        <div className="text-xs text-muted-foreground">→ {fmt(n.recommendedPrice)}</div>
                       </div>
                     </div>
                   </button>
@@ -298,12 +302,12 @@ export default function DashboardPage() {
           )}
         </div>
         <LangToggle />
-        <div className="hidden sm:flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-2.5">
           <div className="text-right">
-            <div className="text-xs font-medium">{DEMO_USER.name}</div>
+            <div className="text-xs font-semibold">{DEMO_USER.name}</div>
             <div className="text-[10px] text-muted-foreground">{t('label.manager')} · {t('label.allBranches')}</div>
           </div>
-          <div className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center text-xs font-semibold">
+          <div className="w-9 h-9 rounded-full brand-gradient text-white flex items-center justify-center text-xs font-semibold shadow-sm">
             {DEMO_USER.initials}
           </div>
         </div>
@@ -325,16 +329,17 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              <div className="p-4 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <div className="relative flex-1 w-full">
+              <div className="p-4 lg:p-5 space-y-4">
+                {/* Search + View Toggle */}
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       type="text"
                       placeholder={t('filter.searchNew')}
                       value={filters.search}
                       onChange={e => setFilters(f => ({...f, search: e.target.value}))}
-                      className="w-full pl-9 pr-9 py-2.5 sm:py-2 text-sm bg-white rounded-lg border border-border outline-none focus:ring-2 focus:ring-brand/30 placeholder:text-muted-foreground shadow-sm"
+                      className="w-full pl-9 pr-9 py-2 text-sm bg-white rounded-lg border border-border outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/40 placeholder:text-muted-foreground/60"
                     />
                     {filters.search && (
                       <button onClick={() => setFilters(f => ({...f, search:""}))} className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -342,29 +347,28 @@ export default function DashboardPage() {
                       </button>
                     )}
                   </div>
-                  
-                  <div className="flex items-center gap-1 bg-white rounded-lg border border-border p-1 self-start sm:self-center">
+                  <div className="flex items-center gap-0.5 bg-white rounded-lg border border-border p-0.5">
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={cn("p-1.5 rounded", viewMode === "grid" ? "bg-brand text-white" : "text-muted-foreground hover:bg-secondary")}
+                      className={cn("p-1.5 rounded-md transition-all", viewMode === "grid" ? "bg-brand text-white shadow-sm" : "text-muted-foreground hover:bg-secondary")}
                     >
                       <LayoutGrid className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setViewMode("list")}
-                      className={cn("p-1.5 rounded", viewMode === "list" ? "bg-brand text-white" : "text-muted-foreground hover:bg-secondary")}
+                      className={cn("p-1.5 rounded-md transition-all", viewMode === "list" ? "bg-brand text-white shadow-sm" : "text-muted-foreground hover:bg-secondary")}
                     >
                       <List className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-wrap">
-                  <span className="text-sm font-medium text-muted-foreground">{t('filter.filterBy')}</span>
+                {/* Compact Filter Bar */}
+                <div className="flex items-center gap-2 overflow-x-auto thin-scroll pb-0.5">
                   <select
                     value={filters.branch}
                     onChange={e => setFilters(f => ({...f, branch: e.target.value as typeof f.branch}))}
-                    className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
+                    className={cn("text-xs font-medium rounded-full px-3 py-1.5 outline-none cursor-pointer transition-all border", filters.branch !== "all" ? "bg-brand text-white border-brand" : "bg-white text-foreground border-border hover:border-brand/40")}
                   >
                     <option value="all">{t('filter.allBranches')}</option>
                     {BRANCHES.map(branch => (
@@ -374,7 +378,7 @@ export default function DashboardPage() {
                   <select
                     value={filters.type}
                     onChange={e => setFilters(f => ({...f, type: e.target.value as typeof f.type}))}
-                    className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
+                    className={cn("text-xs font-medium rounded-full px-3 py-1.5 outline-none cursor-pointer transition-all border", filters.type !== "all" ? "bg-brand text-white border-brand" : "bg-white text-foreground border-border hover:border-brand/40")}
                   >
                     <option value="all">{t('filter.allTypes')}</option>
                     <option value="truck">{t('filter.truck')}</option>
@@ -383,40 +387,29 @@ export default function DashboardPage() {
                   <select
                     value={filters.status}
                     onChange={e => setFilters(f => ({...f, status: e.target.value as typeof f.status}))}
-                    className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
+                    className={cn("text-xs font-medium rounded-full px-3 py-1.5 outline-none cursor-pointer transition-all border", filters.status !== "all" ? "bg-brand text-white border-brand" : "bg-white text-foreground border-border hover:border-brand/40")}
                   >
                     <option value="all">{t('filter.allStatuses')}</option>
                     <option value="green">{t('filter.ready')}</option>
                     <option value="amber">{t('filter.attention')}</option>
                     <option value="red">{t('filter.urgent')}</option>
                   </select>
-                  
+
                   {activeFilters > 0 && (
                     <button
                       onClick={() => setFilters({branch:"all",type:"all",brand:"all",status:"all",search:""})}
-                      className="text-sm text-brand hover:underline"
+                      className="text-xs text-brand-red font-medium hover:underline whitespace-nowrap flex-shrink-0"
                     >
-                      {t('filter.clearAll')}
+                      ✕ {t('filter.clearAll')}
                     </button>
                   )}
 
-                  <span className="text-sm font-medium text-muted-foreground sm:ml-2">{t('filter.groupBy')}</span>
-                  <select
-                    value={groupBy}
-                    onChange={e => setGroupBy(e.target.value as GroupBy)}
-                    className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
-                  >
-                    <option value="none">{t('filter.noGrouping')}</option>
-                    <option value="branch">{t('filter.byBranch')}</option>
-                    <option value="brand">{t('filter.byBrand')}</option>
-                    <option value="status">{t('filter.byStatus')}</option>
-                  </select>
+                  <div className="w-px h-5 bg-border flex-shrink-0 mx-1 hidden sm:block" />
 
-                  <span className="text-sm font-medium text-muted-foreground sm:ml-2">{t('filter.sortBy')}</span>
                   <select
                     value={sortBy}
                     onChange={e => setSortBy(e.target.value as SortBy)}
-                    className="text-sm bg-white border border-border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/30"
+                    className="text-xs font-medium bg-white border border-border rounded-full px-3 py-1.5 outline-none cursor-pointer hover:border-brand/40 transition-all flex-shrink-0"
                   >
                     <option value="days">{sortDesc ? t('filter.daysOldest') : t('filter.daysNewest')}</option>
                     <option value="price">{sortDesc ? t('filter.priceHighLow') : t('filter.priceLowHigh')}</option>
@@ -426,16 +419,28 @@ export default function DashboardPage() {
                   <button
                     onClick={() => setSortDesc(d => !d)}
                     className={cn(
-                      "p-2 rounded-lg border border-border hover:bg-secondary transition-colors",
-                      sortDesc && "bg-brand text-white border-brand hover:bg-brand/90"
+                      "p-1.5 rounded-full border transition-all flex-shrink-0",
+                      sortDesc ? "bg-brand text-white border-brand" : "bg-white border-border text-muted-foreground hover:border-brand/40"
                     )}
-                    title={sortDesc ? "Ascending" : "Descending"}
                   >
-                    <ArrowUpDown className="w-4 h-4" />
+                    <ArrowUpDown className="w-3.5 h-3.5" />
                   </button>
+
+                  <div className="w-px h-5 bg-border flex-shrink-0 mx-1 hidden sm:block" />
+
+                  <select
+                    value={groupBy}
+                    onChange={e => setGroupBy(e.target.value as GroupBy)}
+                    className={cn("text-xs font-medium rounded-full px-3 py-1.5 outline-none cursor-pointer transition-all border flex-shrink-0", groupBy !== "none" ? "bg-brand text-white border-brand" : "bg-white text-foreground border-border hover:border-brand/40")}
+                  >
+                    <option value="none">{t('filter.noGrouping')}</option>
+                    <option value="branch">{t('filter.byBranch')}</option>
+                    <option value="brand">{t('filter.byBrand')}</option>
+                    <option value="status">{t('filter.byStatus')}</option>
+                  </select>
                 </div>
 
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs text-muted-foreground tracking-wide">
                   {t('filter.showing').replace('X', String(sortedVehicles.length)).replace('Y', String(vehicles.length))}
                 </div>
 
@@ -451,49 +456,44 @@ export default function DashboardPage() {
                       )}
                       
                       {viewMode === "grid" ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                          {groupVehicles.map(v => (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {groupVehicles.map((v, i) => (
                             <button
                               key={v.id}
                               onClick={() => handleVehicleSelect(v.id)}
                               className={cn(
-                                "bg-white rounded-xl border border-border p-4 text-left hover:shadow-lg transition-all hover:border-brand/50",
-                                selectedId === v.id && "ring-2 ring-brand border-brand"
+                                "bg-white rounded-2xl overflow-hidden text-left hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 group",
+                                selectedId === v.id ? "ring-2 ring-brand shadow-lg" : "shadow-sm"
                               )}
+                              style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
                             >
-                              <div className="aspect-video bg-secondary rounded-lg mb-3 overflow-hidden">
+                              <div className="aspect-[16/10] bg-secondary/30 overflow-hidden relative rounded-b-none">
                                 <VehicleImage
                                   src={v.image_url}
                                   alt={v.name}
                                   brand={v.brand}
                                   type={v.type}
-                                  className="w-full h-full object-cover"
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 !rounded-b-none"
                                 />
+                                <div className={cn(
+                                  "absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[11px] font-semibold backdrop-blur-sm",
+                                  v.status === "green" && "bg-emerald-500/90 text-white",
+                                  v.status === "amber" && "bg-amber-500/90 text-white",
+                                  v.status === "red" && "bg-red-500/90 text-white"
+                                )}>
+                                  {v.days_in_stock}d
+                                </div>
                               </div>
-                              <div className="space-y-2">
-                                <div className="flex items-start justify-between gap-2">
-                                  <h3 className="font-semibold text-sm truncate">{v.name}</h3>
-                                  <span className={cn(
-                                    "px-2 py-0.5 rounded-full text-xs font-medium",
-                                    v.status === "green" && "bg-green-100 text-green-700",
-                                    v.status === "amber" && "bg-amber-100 text-amber-700",
-                                    v.status === "red" && "bg-red-100 text-red-700"
-                                  )}>
-                                    {v.days_in_stock}d
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                  <span className="flex items-center gap-1">
-                                    <Truck className="w-3 h-3" />
-                                    {v.branch}
-                                  </span>
-                                  <span>·</span>
+                              <div className="p-3.5 space-y-1.5">
+                                <h3 className="font-semibold text-[13px] leading-tight truncate">{v.name}</h3>
+                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                  <span>{v.branch}</span>
+                                  <span className="opacity-40">·</span>
                                   <span>{v.year}</span>
+                                  <span className="opacity-40">·</span>
+                                  <span>{fmtKm(v.mileage)}</span>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                  <span className="font-bold text-sm">{fmt(v.price)}</span>
-                                  <span className="text-xs text-muted-foreground">{fmtKm(v.mileage)}</span>
-                                </div>
+                                <div className="font-bold text-[15px] pt-0.5">{fmt(v.price)}</div>
                               </div>
                             </button>
                           ))}
@@ -545,34 +545,6 @@ export default function DashboardPage() {
                             </button>
                           ))}
                         </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                  <h3 className="font-semibold text-sm truncate">{v.name}</h3>
-                                  <span className={cn(
-                                    "px-2 py-0.5 rounded-full text-xs font-medium ml-2",
-                                    v.status === "green" && "bg-green-100 text-green-700",
-                                    v.status === "amber" && "bg-amber-100 text-amber-700",
-                                    v.status === "red" && "bg-red-100 text-red-700"
-                                  )}>
-                                    {v.days_in_stock}d
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                  <span>{v.branch}</span>
-                                  <span>·</span>
-                                  <span>{v.year}</span>
-                                  <span>·</span>
-                                  <span className="whitespace-nowrap">{fmtKm(v.mileage)}</span>
-                                </div>
-                              </div>
-                              <div className="text-right flex-shrink-0 flex flex-col items-end">
-                                <div className="font-bold text-sm">{fmt(v.price)}</div>
-                                <span className="text-xs text-muted-foreground lg:hidden">{fmtKm(v.mileage)}</span>
-                              </div>
-                              <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                            </button>
-                          ))}
-                        </div>
                       )}
                     </div>
                   ))}
@@ -595,30 +567,22 @@ export default function DashboardPage() {
           mobileView === "detail" ? "translate-x-0" : "translate-x-full lg:translate-x-0"
         )}>
           {selected ? (
-            <div className="h-full flex flex-col">
-              <div className="flex items-center gap-2 px-3 py-2 bg-white border-b border-border flex-shrink-0">
-                <button onClick={handleBackToOverview} className="p-1.5 hover:bg-secondary rounded-md">
-                  <X className="w-5 h-5" />
-                </button>
-                <span className="text-sm font-medium truncate flex-1">{selected.name}</span>
-              </div>
-              <div className="flex-1 overflow-hidden">
-                <VehicleDetail vehicle={selected} onToggleAction={toggleAction} onUpdatePrice={handleUpdatePrice} />
-              </div>
+            <div className="h-full overflow-hidden">
+              <VehicleDetail vehicle={selected} onToggleAction={toggleAction} onUpdatePrice={handleUpdatePrice} onClose={handleBackToOverview} />
             </div>
           ) : (
-            <div className="h-full overflow-y-auto p-5">
-              <div className="bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-200 rounded-xl p-5 mb-6">
+            <div className="h-full overflow-y-auto p-5 lg:p-6">
+              <div className="brand-gradient rounded-2xl p-5 mb-6 text-white shadow-lg">
                 <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-violet-500 flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="w-6 h-6 text-white" />
+                  <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
+                    <Sparkles className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-lg font-semibold text-violet-900 mb-1">
-                      {lang === 'nl' ? 'AI Insights' : 'AI Insights'}
+                    <h2 className="text-lg font-bold mb-0.5">
+                      AI Insights
                     </h2>
-                    <p className="text-sm text-violet-700">
-                      {lang === 'nl' 
+                    <p className="text-sm text-white/80">
+                      {lang === 'nl'
                         ? `Analyse van ${vehicles.length} voertuigen in uw voorraad`
                         : `Analysis of ${vehicles.length} vehicles in your inventory`
                       }
@@ -634,9 +598,30 @@ export default function DashboardPage() {
                     className="bg-white rounded-xl border border-border p-4 hover:border-brand/30 transition-colors cursor-pointer"
                     onClick={() => {
                       if (insight.type === 'price') {
-                        setFilters(f => ({...f, status: 'red'}));
+                        setSortBy('days');
+                        setSortDesc(false);
+                        setFilters(f => ({...f, status: 'all', branch: 'all', type: 'all', brand: 'all'}));
                       } else if (insight.type === 'critical') {
                         setFilters(f => ({...f, status: 'red'}));
+                      } else if (insight.type === 'action') {
+                        setSortBy('days');
+                        setSortDesc(false);
+                        setFilters(f => ({...f, status: 'all', branch: 'all', type: 'all', brand: 'all'}));
+                      } else if (insight.type === 'market') {
+                        setSortBy('price');
+                        setSortDesc(true);
+                        setFilters(f => ({...f, status: 'all', branch: 'all', type: 'all', brand: 'all'}));
+                      }
+                      // Select the first relevant vehicle
+                      const relevant = insight.type === 'critical'
+                        ? vehicles.filter(v => v.days_in_stock > 90)
+                        : insight.type === 'price'
+                        ? vehicles.filter(v => v.recommended_price && v.recommended_price < v.price)
+                        : insight.type === 'action'
+                        ? vehicles.filter(v => v.pending_actions > 0)
+                        : vehicles;
+                      if (relevant.length > 0) {
+                        handleVehicleSelect(relevant[0].id);
                       }
                     }}
                   >
@@ -727,6 +712,13 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      <AIChat
+        vehicles={vehicles}
+        kpis={kpi}
+        onSelectVehicle={handleVehicleSelect}
+        lang={lang}
+      />
     </div>
   );
 }
